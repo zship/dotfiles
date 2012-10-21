@@ -1,0 +1,19 @@
+[user]
+	name = Zach Shipley
+	;email = zach@openskysoftware.com
+	email = zach@zachshipley.com
+
+[alias]
+	lol = log --graph --decorate --pretty=oneline --abbrev-commit
+	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+	up = !"git stash; git svn rebase; git stash pop"
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+[browser "chrome"]
+	path = /usr/bin/google-chrome
+[browser "firefox"]
+	path = /usr/local/firefox/firefox

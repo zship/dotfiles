@@ -1,0 +1,25 @@
+#VIM mode for readline-based progams
+set editing-mode vi
+
+# don't strip characters to 7 bits when reading
+#set input-meta on
+
+# allow iso-latin1 characters to be inserted rather
+# than converted to prefix-meta sequences
+#set convert-meta off
+
+# display characters with the eighth bit set directly
+# rather than as meta-prefixed characters
+#set output-meta on
+
+#completions show on first TAB rather than two TABs
+set show-all-if-ambiguous on
+set completion-ignore-case on
+#hyphens and underscores are treated as equal
+set completion-map-case on
+
+#TAB: menu-complete
+#shift-tab: menu-complete-reverse
+#"\e[Z": "\e-1\C-i"
+#alt-space (testing)
+#"\e ": " "
