@@ -454,36 +454,6 @@ xmap <silent> ie <Plug>CamelCaseMotion_ie
 let g:clang_complete_auto=0
 
 
-" ---------- eclim ----------
-
-"let g:EclimHome = '/usr/local/eclipse-helios/plugins/org.eclim_1.6.1'
-"let g:EclimHome = '/home/zach/.eclipse/org.eclipse.platform_3.6.1_793567567/plugins/org.eclim_1.6.3'
-let g:EclimHome = '/home/zach/.eclipse/org.eclipse.platform_3.7.0_155965261/plugins/org.eclim_1.7.6'
-"let g:EclimEclipseHome = '/usr/local/eclipse-helios'
-"let g:EclimEclipseHome = '/home/zach/.eclipse/org.eclipse.platform_3.6.1_793567567'
-let g:EclimEclipseHome = '/home/zach/.eclipse/org.eclipse.platform_3.7.0_155965261'
-let g:EclimHtmlValidate = 0
-let g:EclimXmlValidate = 0
-let g:EclimJavaSearchMapping = 0
-let g:EclimJavascriptValidate = 0
-
-"Damn it!  This is why I keep getting private static final Log logger =
-"LogFactory.getLog([classname]) in every single file! This 'feature' can burn
-"in hell!
-let g:EclimLoggingDisabled = 1
-let g:EclimJavascriptLintEnabled = 0
-
-" Ant shortcuts
-nnoremap <Leader>ax :Ant xmlc<CR><CR>
-nnoremap <Leader>ac :Ant clean<CR><CR>
-nnoremap <Leader>ab :Ant build<CR><CR>
-nnoremap <Leader>ad :Ant deploy<CR><CR>
-nnoremap <Leader>ar :Ant reload<CR><CR>
-
-" Eclim shortcuts
-nnoremap <Leader>pr :ProjectRefresh<CR>
-
-
 " ---------- supertab ----------
 
 " let supertab guess what kind of completion is needed
@@ -537,6 +507,36 @@ let g:markdown_fenced_languages = ['js=javascript']
 
 let g:Powerline_symbols = 'fancy'
 let g:Powerline_stl_path_style = 'filename'
+
+
+" ---------- eclim ----------
+
+"let g:EclimHome = '/usr/local/eclipse-helios/plugins/org.eclim_1.6.1'
+let g:EclimHome = '/home/zach/.eclipse/org.eclipse.platform_3.6.1_793567567/plugins/org.eclim_1.6.3'
+"let g:EclimHome = '/home/zach/.eclipse/org.eclipse.platform_3.7.0_155965261/plugins/org.eclim_1.7.6'
+"let g:EclimEclipseHome = '/usr/local/eclipse-helios'
+let g:EclimEclipseHome = '/home/zach/.eclipse/org.eclipse.platform_3.6.1_793567567'
+"let g:EclimEclipseHome = '/home/zach/.eclipse/org.eclipse.platform_3.7.0_155965261'
+let g:EclimHtmlValidate = 0
+let g:EclimXmlValidate = 0
+let g:EclimJavaSearchMapping = 0
+let g:EclimJavascriptValidate = 0
+
+"Damn it!  This is why I keep getting private static final Log logger =
+"LogFactory.getLog([classname]) in every single file! This 'feature' can burn
+"in hell!
+let g:EclimLoggingDisabled = 1
+let g:EclimJavascriptLintEnabled = 0
+
+" Ant shortcuts
+nnoremap <Leader>ax :Ant xmlc<CR><CR>
+nnoremap <Leader>ac :Ant clean<CR><CR>
+nnoremap <Leader>ab :Ant build<CR><CR>
+nnoremap <Leader>ad :Ant deploy<CR><CR>
+nnoremap <Leader>ar :Ant reload<CR><CR>
+
+" Eclim shortcuts
+nnoremap <Leader>pr :ProjectRefresh<CR>
 
 
 
