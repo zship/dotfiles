@@ -331,7 +331,7 @@ nnoremap <A-,> <<
 vnoremap <A-.> >
 nnoremap <A-.> >>
 
-" keypad with AltGr (custom xmodmap file)
+" keypad with AltGr (custom ~/.xmodmap file)
 lnoremap ナ 7
 lnoremap ニ 8
 lnoremap ラ 9
@@ -355,8 +355,6 @@ nnoremap モ :1<C-^>
 nnoremap ネ :2<C-^>
 nnoremap ル :3<C-^>
 nnoremap ホ :0<C-^>
-
-
 
 " Alt-Shift keypad
 "inoremap <A-U> 7
@@ -401,6 +399,159 @@ cmap w!! w !sudo tee % > /dev/null
 " edit/source this file
 nnoremap <Leader>ev :e ~/.vimrc<CR>
 nnoremap <Leader>sv :source ~/.vimrc<CR>
+
+
+
+
+" ========== Plugin Settings ==========
+
+
+" ---------- vim-easymotion ----------
+
+let g:EasyMotion_mapping_w = '<A-l>'
+let g:EasyMotion_mapping_b = '<A-h>'
+let g:EasyMotion_mapping_j = '<A-j>'
+let g:EasyMotion_mapping_k = '<A-k>'
+
+
+" ---------- nerdtree ----------
+
+nnoremap <silent> <A-a> :NERDTreeToggle<CR><C-w>=
+
+" Let me use C-j and C-k the same way I do in normal buffers
+let NERDTreeMapJumpNextSibling = "<A-u>"
+let NERDTreeMapJumpPrevSibling = "<A-i>"
+
+
+" ---------- bclose ----------
+
+cnoremap bd Bclose
+
+
+" ---------- bufexplorer ----------
+
+nnoremap <silent> <A-s> :BufExplorer<CR>
+
+
+" ---------- camelcasemotion ----------
+
+map <silent> w <Plug>CamelCaseMotion_w
+map <silent> b <Plug>CamelCaseMotion_b
+map <silent> e <Plug>CamelCaseMotion_e
+sunmap w
+sunmap b
+sunmap e
+omap <silent> iw <Plug>CamelCaseMotion_iw
+xmap <silent> iw <Plug>CamelCaseMotion_iw
+omap <silent> ib <Plug>CamelCaseMotion_ib
+xmap <silent> ib <Plug>CamelCaseMotion_ib
+omap <silent> ie <Plug>CamelCaseMotion_ie
+xmap <silent> ie <Plug>CamelCaseMotion_ie
+
+
+" ---------- clang_complete ----------
+
+let g:clang_complete_auto=0
+
+
+" ---------- eclim ----------
+
+"let g:EclimHome = '/usr/local/eclipse-helios/plugins/org.eclim_1.6.1'
+"let g:EclimHome = '/home/zach/.eclipse/org.eclipse.platform_3.6.1_793567567/plugins/org.eclim_1.6.3'
+let g:EclimHome = '/home/zach/.eclipse/org.eclipse.platform_3.7.0_155965261/plugins/org.eclim_1.7.6'
+"let g:EclimEclipseHome = '/usr/local/eclipse-helios'
+"let g:EclimEclipseHome = '/home/zach/.eclipse/org.eclipse.platform_3.6.1_793567567'
+let g:EclimEclipseHome = '/home/zach/.eclipse/org.eclipse.platform_3.7.0_155965261'
+let g:EclimHtmlValidate = 0
+let g:EclimXmlValidate = 0
+let g:EclimJavaSearchMapping = 0
+let g:EclimJavascriptValidate = 0
+
+"Damn it!  This is why I keep getting private static final Log logger =
+"LogFactory.getLog([classname]) in every single file! This 'feature' can burn
+"in hell!
+let g:EclimLoggingDisabled = 1
+let g:EclimJavascriptLintEnabled = 0
+
+" Ant shortcuts
+nnoremap <Leader>ax :Ant xmlc<CR><CR>
+nnoremap <Leader>ac :Ant clean<CR><CR>
+nnoremap <Leader>ab :Ant build<CR><CR>
+nnoremap <Leader>ad :Ant deploy<CR><CR>
+nnoremap <Leader>ar :Ant reload<CR><CR>
+
+" Eclim shortcuts
+nnoremap <Leader>pr :ProjectRefresh<CR>
+
+
+" ---------- supertab ----------
+
+" let supertab guess what kind of completion is needed
+let g:SuperTabDefaultCompletionType = "context"
+let g:SuperTabLeadingSpaceCompletion = 0
+let g:SuperTabCrMapping = 0
+"let g:SuperTabMappingForward = '<c-space>'
+"let g:SuperTabMappingBackward = '<s-c-space>'
+let g:SuperTabLongestEnhanced = 1
+let g:SuperTabLongestHighlight = 1
+
+
+" ---------- syntastic ----------
+
+let g:syntastic_mode_map = {
+	\'mode': 'active',
+	\'active_filetypes': ['javascript', 'sh'],
+	\'passive_filetypes': ['java']
+\}
+
+let g:syntastic_javascript_checker='jshint'
+
+
+" ---------- taglist (if I start using it again) ----------
+
+nnoremap <silent> <A-d> :TlistToggle<CR>
+let Tlist_Show_One_File = 1
+let Tlist_Enable_Fold_Column = 0
+let Tlist_GainFocus_On_ToggleOpen = 1
+let Tlist_Display_Prototype = 1
+
+" actionscript language
+let tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
+
+" Regenerate ctags
+nnoremap <Leader>ct :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR>
+
+" Tags action
+"set tags=tags;/
+"set tags+=~/.vim/tags/qt4
+
+
+" ---------- vim-markdown ----------
+
+" highlight javascript in code blocks (also fixes highlighting after code
+" blocks)
+let g:markdown_fenced_languages = ['js=javascript']
+
+
+" ---------- vim-powerline ----------
+
+let g:Powerline_symbols = 'fancy'
+let g:Powerline_stl_path_style = 'filename'
+
+
+
+
+" ========== Piped Shell Commands ==========
+
+" PHP Replace visual selection with html entities, if appropriate
+vnoremap <silent> <Leader>he :!php -R 'echo mb_convert_encoding($argn,"HTML-ENTITIES","UTF-8");'<CR>
+
+" HTML Tidy for visual selections (write errors to /dev/null)
+vnoremap <silent> <Leader>ht :!tidy -q --indent auto --input-encoding utf8 --output-encoding ascii --tidy-mark 0 --wrap 0 --vertical-space 1 --show-body-only 1 2>/dev/null<CR>
+
+
+
+" ========== (Personal Reference) ==========
 
 " find out which plugins are misbehaving
 " vim --cmd 'let g:sourced_files=[] | autocmd SourcePre * if !empty(g:sourced_files) && stridx(&cpo, "$")==-1 | echomsg "cpo does not contain dollar sign after loading ".g:sourced_files[-1] | set cpo+=$ | endif | let g:sourced_files+=[expand("<amatch>")]'
