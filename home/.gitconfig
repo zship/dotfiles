@@ -19,3 +19,5 @@
 	path = /usr/local/firefox/firefox
 [branch]
 	autosetupmerge = true
+[push]
+	default = upstream
