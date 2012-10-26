@@ -279,6 +279,8 @@ vnoremap <c-l> 30l
 
 " pinky stretchers. Use lmap to affect all of: insert, command, replace, search
 lnoremap <A-a> :
+lnoremap <A-z> ~
+lnoremap <A-f> +
 lmap <A-u> {
 lmap <A-i> }
 lmap <A-o> (
@@ -292,15 +294,14 @@ lmap <A-'> "
 lmap <A-n> :
 lmap <A-m> [
 lmap <A-,> ]
+lnoremap <A-q> !
+lnoremap <A-w> @
+lnoremap <A-e> #
+lnoremap <A-r> $
 lnoremap <A-t> %
 lnoremap <A-y> -
 lnoremap <A-h> _
 lnoremap <A-g> +
-lnoremap <A-f> +
-lnoremap <A-r> $
-lnoremap <A-e> #
-lnoremap <A-w> @
-lnoremap <A-q> !
 lnoremap <A-.> ->
 lnoremap <A-/> =>
 
