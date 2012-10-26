@@ -5,11 +5,7 @@ set nocompatible
 
 
 
-" ========== Pathogen Init ==========
-" Use the pathogen plugin to manage all other plugins
-
-"runtime bundle/pathogen/autoload/pathogen.vim
-"call pathogen#infect()
+" ========== Vundle Init ==========
 
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
@@ -51,11 +47,12 @@ set history=100             " command-mode commands saved (default 20)
 set nowrap                  " wrap only on actual breaks
 set textwidth=0             " do not insert line breaks as I type
 set number                  " show line numbers
-set showcmd                 " Show the current command in the lower right corner
-set showmode                " Show the current mode at lower-left corner
-set lazyredraw              " Don't update the display while executing macros
+set showcmd                 " show the current command in the lower right corner
+set showmode                " show the current mode at lower-left corner
+set lazyredraw              " don't update the display while executing macros
 set hidden                  " buffers can exist in the background
-set diffopt=vertical        " Diff mode should split vertically
+set diffopt=vertical        " diff mode should split vertically
+set nofoldenable            " disable folding
 
 set laststatus=2            " Always show status line for each window
 set statusline=%F%m%r%h%w\ (%{&ff}){%Y}\ [%l/%L,%v][%p%%]
@@ -99,9 +96,9 @@ set directory=$HOME/.vim-backup//
 
 " ========== Syntax ==========
 
-filetype on            " Enable filetype detection
-filetype indent on     " Enable filetype-specific indenting
-filetype plugin on     " Enable filetype-specific plugins
+filetype on            " enable filetype detection
+filetype indent on     " enable filetype-specific indenting
+filetype plugin on     " enable filetype-specific plugins
 syntax enable          " syntax coloring on
 
 
@@ -189,9 +186,6 @@ if !exists("autocommands_loaded")
 	" less css
 	autocmd BufRead,BufNewFile *.less set ft=less
 
-	" Haml - generate html after every save
-	"autocmd BufWritePost *.haml execute "silent! !/usr/local/haml/bin/haml " . expand("%") . " " . expand("%:r") . ".html"
-
 	" CSS: I like to indent things differently than VIM assumes
 	"au BufEnter *.css set nocindent
 	"au BufLeave *.css set cindent
@@ -216,8 +210,8 @@ endif
 
 " ========== Key Mappings ==========
 
-set iminsert=1  " Enable :lmap for easier insert/command/search/replace mappings
-set imsearch=-1 " Use value of iminsert for searching
+set iminsert=1  " enable :lmap for easier insert/command/search/replace mappings
+set imsearch=-1 " use value of iminsert for searching
 
 
 " Windows
@@ -234,36 +228,36 @@ nnoremap <Leader>wz <c-w>z
 nnoremap <Leader>wu <c-w>5<
 nnoremap <Leader>wi <c-w>5>
 
-" Space toggles folds
+" space toggles folds
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':'l')<CR>
 
-" Toggle search highlighting
+" toggle search highlighting
 nnoremap <silent> <A-y> :set hlsearch! hlsearch?<CR>
 
-" Inserting lines without going into insert mode
+" inserting lines without going into insert mode
 " only for regular buffers; keep <CR> working for quickfix/nerdtree
 nnoremap <expr> <S-Enter> (&l:buftype == '') ? "O\<Esc>" : "\<CR>"
 nnoremap <expr> <CR> (&l:buftype == '') ? "o\<Esc>" : "\<CR>"
 
-" Escape's too far away; let's use jj
+" escape's too far away; let's use jj
 inoremap jj <Esc>
 
-"clipboard paste/copy
+" clipboard paste/copy
 inoremap <C-V> <Esc>"+gpa
 vnoremap <C-c> "+y
 
-" Visual-mode text pasting without filling the default register
+" visual-mode text pasting without filling the default register
 vnoremap r "_dP
 
 " I don't need spaces inserted when joining lines
 "vnoremap J gJ
 
-" Swap ; and :  Convenient. Also activate lmaps when entering command mode
+" swap ; and :  Convenient. Also activate lmaps when entering command mode
 nnoremap ; :<C-^>
 nnoremap : ;
 vnoremap ; :<C-^>
 
-" Easier movement commands
+" easier movement commands
 " insert mode j and k are covered under Completion section
 inoremap <c-h> <Left>
 inoremap <c-l> <Right>
@@ -283,7 +277,7 @@ vnoremap <c-h> 30h
 vnoremap <c-l> 30l
 
 
-" Pinky stretchers. Use lmap to affect all of: insert, command, replace, search
+" pinky stretchers. Use lmap to affect all of: insert, command, replace, search
 lnoremap <A-a> :
 lmap <A-u> {
 lmap <A-i> }
@@ -390,23 +384,23 @@ nnoremap ホ :0<C-^>
 "nnoremap <A-n> :0
 
 " I use a file with my favorite macros.  This mapping makes using that simpler
-" Yank the current line to register c, then switch to the previous window and apply
+" yank the current line to register c, then switch to the previous window and apply
 nnoremap <Leader>mm "cyy<c-w>w@c
 
-" Easier filetype switching (for NERD Commenter, mostly)
+" easier filetype switching (for NERD Commenter, mostly)
 nnoremap <Leader>th :set filetype=html<CR>
 nnoremap <Leader>tp :set filetype=php<CR>
 nnoremap <Leader>tj :set filetype=javascript<CR>
 nnoremap <Leader>tc :set filetype=css<CR>
 nnoremap <Leader>tt :filetype detect<CR>
 
-" Save files as root
+" save files as root
 cmap w!! w !sudo tee % > /dev/null
 
-" Edit/source this file
+" edit/source this file
 nnoremap <Leader>ev :e ~/.vimrc<CR>
 nnoremap <Leader>sv :source ~/.vimrc<CR>
 
-" Find out which plugins are misbehaving
+" find out which plugins are misbehaving
 " vim --cmd 'let g:sourced_files=[] | autocmd SourcePre * if !empty(g:sourced_files) && stridx(&cpo, "$")==-1 | echomsg "cpo does not contain dollar sign after loading ".g:sourced_files[-1] | set cpo+=$ | endif | let g:sourced_files+=[expand("<amatch>")]'
 " vim --cmd 'let g:sourced_files=[] | autocmd SourcePre * if !empty(g:sourced_files) && &tw != 9 | echomsg "potential textwidth overwrite: ".g:sourced_files[-1] | set tw=9 | endif | let g:sourced_files+=[expand("<amatch>")]'
