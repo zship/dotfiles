@@ -61,6 +61,11 @@ export JAVA_HOME=/etc/alternatives/java_sdk/
 # Aliases & Functions
 # ------------------------------------------
 
+# homesick is a dotfile sync program: https://github.com/andsens/homeshick
+if [ -f "$HOME/.homeshick" ]; then
+	alias homesick="$HOME/.homeshick"
+fi
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
