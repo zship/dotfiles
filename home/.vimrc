@@ -91,8 +91,9 @@ set incsearch           " find the next match as you type
 
 " ========== Swap files ==========
 
-set backupdir=$HOME/.vim/backup/
-set directory=$HOME/.vim/backup/
+silent execute '!mkdir "'.$HOME.'/.vim-backup"'
+set backupdir=$HOME/.vim-backup//
+set directory=$HOME/.vim-backup//
 
 
 
