@@ -17,3 +17,5 @@
 	path = /usr/bin/google-chrome
 [browser "firefox"]
 	path = /usr/local/firefox/firefox
+[branch]
+	autosetupmerge = true
