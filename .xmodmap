@@ -1,0 +1,52 @@
+!!!!!! Set right alt -> Mode_switch
+!clear mod3
+!keycode 108 = ISO_Level3_Shift
+keycode 108 = Mode_switch Multi_key
+!add mod3 = ISO_Level3_Shift
+
+keysym q = q Q kana_TA at
+keysym w = w W kana_TE
+keysym e = e E kana_I kana_i
+keysym r = r R kana_SU Romaji
+keysym t = t T kana_KA
+keysym y = y Y kana_N
+keysym u = u U kana_NA
+keysym i = i I kana_NI
+keysym o = o O kana_RA kana_RO
+keysym p = p P kana_SE
+keysym a = a A kana_CHI
+keysym s = s S kana_TO
+keysym d = d D kana_SHI
+keysym f = f F kana_HA
+keysym g = g G kana_KI
+keysym h = h H kana_KU Hiragana
+keysym j = j J kana_MA Hiragana_Katakana
+keysym k = k K kana_NO Katakana
+keysym l = l L kana_RI
+keysym semicolon = semicolon colon kana_RE
+keysym apostrophe = apostrophe quotedbl kana_KE
+keysym z = z Z kana_TSU kana_tsu
+keysym x = x X kana_SA
+keysym c = c C kana_SO
+keysym v = v V kana_HI
+keysym b = b B kana_KO
+keysym n = n N kana_MI Henkan
+keysym m = m M kana_MO Muhenkan
+keysym comma = comma less kana_NE kana_comma
+keysym period = period greater kana_RU kana_fullstop
+keysym slash = slash question kana_ME kana_middledot
+
+keysym space = space space kana_HO space space space space space
+
+!keysym minus = minus underscore kana_HO
+!keysym equal = equal plus kana_HE
+!keysym 1 = 1 exclam    kana_NU
+!keysym 2 = 2 quotedbl  kana_FU
+!keysym 4 = 4 dollar    kana_U kana_u
+!keysym 5 = 5 percent   kana_E kana_e
+!keysym 6 = 6 ampersand kana_O kana_o
+!keysym 8 = 8 parenleft kana_YU kana_yu
+!keysym 9 = 9 parenright kana_YO kana_yo
+!keysym 0 = 0 asciitilde kana_WA kana_WO
+!keysym 3 = 3 numbersign kana_A kana_a
+!keysym 7 = 7 apostrophe kana_YA kana_ya

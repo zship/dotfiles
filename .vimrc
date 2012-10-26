@@ -8,8 +8,39 @@ set nocompatible
 " ========== Pathogen Init ==========
 " Use the pathogen plugin to manage all other plugins
 
-runtime bundle/pathogen/autoload/pathogen.vim
-call pathogen#infect()
+"runtime bundle/pathogen/autoload/pathogen.vim
+"call pathogen#infect()
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+Bundle 'gmarik/vundle'
+
+Bundle 'rbgrouleff/bclose.vim'
+Bundle 'vim-scripts/bufexplorer.zip'
+
+Bundle 'zship/CamelCaseMotion'
+Bundle 'zship/vim-java-annotation-indent'
+Bundle 'zship/vim-easymotion'
+
+Bundle 'scrooloose/nerdcommenter'
+Bundle 'scrooloose/nerdtree'
+Bundle 'scrooloose/syntastic'
+
+Bundle 'tpope/vim-abolish'
+Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-markdown'
+Bundle 'tpope/vim-surround'
+
+Bundle 'Townk/vim-autoclose'
+"Bundle 'vim-scripts/ShowMarks'
+Bundle 'ervandew/supertab'
+Bundle 'godlygeek/tabular'
+Bundle 'digitaltoad/vim-jade'
+Bundle 'groenewege/vim-less'
+Bundle 'Lokaltog/vim-powerline'
+Bundle 'lukaszb/vim-web-indent'
+Bundle 'jnurmine/Zenburn'
 
 
 
@@ -102,7 +133,7 @@ hi Error guibg=#333
 hi CursorLineNr gui=none term=none
 " old directory
 hi Directory ctermfg=188 guifg=#dcdccc
-" old listchar
+" old (very subtle) listchar
 hi SpecialKey ctermfg=240 guibg=NONE guifg=#5c5c5c
 
 
@@ -252,7 +283,7 @@ vnoremap <c-l> 30l
 
 
 " Pinky stretchers. Use lmap to affect all of: insert, command, replace, search
-lnoremap <A-a> ~
+lnoremap <A-a> :
 lmap <A-u> {
 lmap <A-i> }
 lmap <A-o> (
@@ -261,20 +292,23 @@ lmap <A-Bslash> \|
 lmap <A-j> <
 lmap <A-k> >
 lnoremap <A-;> =
-lnoremap <A-l> _
+lnoremap <A-l> !
 lmap <A-'> "
+lmap <A-n> :
 lmap <A-m> [
 lmap <A-,> ]
 lnoremap <A-t> %
 lnoremap <A-y> -
-lnoremap <A-h> -
+lnoremap <A-h> _
 lnoremap <A-g> +
+lnoremap <A-f> +
 lnoremap <A-r> $
 lnoremap <A-e> #
 lnoremap <A-w> @
 lnoremap <A-q> !
 lnoremap <A-.> ->
 lnoremap <A-/> =>
+
 
 " inner-command remaps to correspond to how I map [(" above
 nnoremap di<A-'> di"
