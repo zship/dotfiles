@@ -13,6 +13,7 @@
 	diff = auto
 	interactive = auto
 	status = auto
+	ui = true
 [browser "chrome"]
 	path = /usr/bin/google-chrome
 [browser "firefox"]
