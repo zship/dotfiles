@@ -7,6 +7,7 @@ set nocompatible
 
 " ========== Vundle Init ==========
 
+filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
@@ -29,6 +30,8 @@ Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-surround'
 
 Bundle 'Townk/vim-autoclose'
+Bundle 'kana/vim-arpeggio'
+"Bundle 'jelera/vim-javascript-syntax'
 "Bundle 'vim-scripts/ShowMarks'
 Bundle 'ervandew/supertab'
 Bundle 'godlygeek/tabular'
@@ -37,6 +40,15 @@ Bundle 'groenewege/vim-less'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'lukaszb/vim-web-indent'
 Bundle 'jnurmine/Zenburn'
+
+
+
+" ========== Syntax ==========
+
+filetype on            " enable filetype detection
+filetype indent on     " enable filetype-specific indenting
+filetype plugin on     " enable filetype-specific plugins
+syntax enable          " syntax coloring on
 
 
 
@@ -91,15 +103,6 @@ set incsearch           " find the next match as you type
 silent execute '!mkdir "'.$HOME.'/.vim-backup"'
 set backupdir=$HOME/.vim-backup//
 set directory=$HOME/.vim-backup//
-
-
-
-" ========== Syntax ==========
-
-filetype on            " enable filetype detection
-filetype indent on     " enable filetype-specific indenting
-filetype plugin on     " enable filetype-specific plugins
-syntax enable          " syntax coloring on
 
 
 
@@ -412,6 +415,12 @@ let g:EasyMotion_mapping_w = '<A-l>'
 let g:EasyMotion_mapping_b = '<A-h>'
 let g:EasyMotion_mapping_j = '<A-j>'
 let g:EasyMotion_mapping_k = '<A-k>'
+
+
+" ---------- vim-easymotion ----------
+
+call arpeggio#load()
+Arpeggio inoremap jk <Esc>
 
 
 " ---------- nerdtree ----------
