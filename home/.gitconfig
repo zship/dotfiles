@@ -9,7 +9,7 @@
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
 	up = !"git stash; git svn rebase; git stash pop"
 	; pull in submodules (does not update them; only ensures they're loaded)
-	subup = "git pull; git submodule init; git submodule update; git submodule status"
+	subup = !"git pull; git submodule init; git submodule update; git submodule status"
 [color]
 	branch = auto
 	diff = auto
