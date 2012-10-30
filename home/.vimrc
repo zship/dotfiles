@@ -31,6 +31,7 @@ Bundle 'tpope/vim-surround'
 
 Bundle 'Townk/vim-autoclose'
 Bundle 'kana/vim-arpeggio'
+Bundle 'JavaScript-syntax'
 "Bundle 'jelera/vim-javascript-syntax'
 "Bundle 'vim-scripts/ShowMarks'
 Bundle 'ervandew/supertab'
