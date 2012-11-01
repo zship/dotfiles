@@ -168,14 +168,11 @@ inoremap <expr> <c-k> pumvisible() ? "\<C-p>" : "\<Up>"
 
 
 
-
-
 " ========== Cursor/scrolling ==========
 
 set scrolloff=8       " cursor stays within n lines N-S
 set sidescrolloff=8   " cursor stays within n lines E-W
 set virtualedit=all   " cursor can be over areas with no characters
-
 
 
 
@@ -206,6 +203,16 @@ if !exists("autocommands_loaded")
 
 	" validate html on save (syntastic is used, I think)
 	"au BufWritePost *.html Validate
+endif
+
+
+
+" ========== Project-specific settings ==========
+
+if !exists("project_settings_loaded")
+	let project_settings_loaded = 1
+
+	"autocmd BufNewFile,BufRead */Projects/amd-utils/*.js setlocal expandtab tabstop=4 shiftwidth=4
 endif
 
 
