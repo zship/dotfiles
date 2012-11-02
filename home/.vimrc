@@ -544,6 +544,7 @@ let g:EclimJavascriptValidate = 0
 "in hell!
 let g:EclimLoggingDisabled = 1
 let g:EclimJavascriptLintEnabled = 0
+let g:EclimValidateSortResults = 'severity'
 
 " Ant shortcuts
 nnoremap <Leader>ax :Ant xmlc<CR><CR>
