@@ -223,6 +223,7 @@ endif
 
 set iminsert=1  " enable :lmap for easier insert/command/search/replace mappings
 set imsearch=-1 " use value of iminsert for searching
+set macmeta " Enable <M-...> keybindings in Mac
 
 
 " Windows

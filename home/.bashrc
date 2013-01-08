@@ -99,7 +99,8 @@ if [ -x /usr/bin/yum ]; then
 		sudo yum list --showduplicates --debuglevel=0 --errorlevel=0 "$1"
 	}
 	# less wraps lines improperly because of input buffering.
-	pmsl() { unbuffer bash -cis 'pms $0' "$1" |& less -R; }
+	#pmsl() { unbuffer bash -cis 'pms $0' "$1" |& less -R; }
+	pmsl() { unbuffer bash -cis 'pms $0' "$1" | less -R; }
 	pmf() {
 		echo 'Installed Package Matches'
 		echo '-------------------------'
@@ -113,7 +114,8 @@ if [ -x /usr/bin/yum ]; then
 		echo '---------------'
 		rpm -ql "$1"
 	}
-	pmfl() { unbuffer bash -cis 'pmf $0' "$1" |& less -R; }
+	#pmfl() { unbuffer bash -cis 'pmf $0' "$1" |& less -R; }
+	pmfl() { unbuffer bash -cis 'pmf $0' "$1" | less -R; }
 	alias pmi='sudo yum install'
 	alias pmu='sudo yum update'
 	alias pmr='sudo yum remove'
@@ -143,6 +145,32 @@ elif [ -x /usr/bin/apt-get ]; then
 	alias pmi='sudo apt-get install'
 	alias pmu='sudo apt-get update && sudo apt-get upgrade'
 	alias pmr='sudo apt-get remove'
+elif [ -x /usr/local/bin/brew ]; then
+	pms() {
+		echo 'Partial Matches'
+		echo '-------------------------'
+		echo ''
+		brew search "$1"
+		echo 'Description Matches'
+		echo '-------------------------'
+		echo ''
+		brew desc -s "$1"
+		echo 'Exact Matches (with version info)'
+		echo '-------------------------'
+		brew info "$1"
+	}
+	pmf() {
+		echo 'Package Info:'
+		echo '------------'
+		brew info "$1"
+		echo ''
+		echo "Installed Files:"
+		echo '---------------'
+		brew list --unbrewed "$1"
+	}
+	alias pmi='brew install'
+	alias pmu='brew update && brew upgrade'
+	alias pmr='brew uninstall'
 fi
 
 
