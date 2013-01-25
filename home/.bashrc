@@ -51,7 +51,7 @@ esac
 # Environment Variables
 # ------------------------------------------
 
-PATH=$PATH:$HOME/bin/:/usr/local/ant/bin/:/sbin/:$HOME/.cabal/bin/
+PATH=$PATH:$HOME/bin/:/usr/local/ant/bin/:/sbin/:$HOME/.cabal/bin/:/usr/local/share/npm/bin
 CLASSPATH=/usr/java/jdk/lib/rt.jar:/usr/java/jdk/lib/tools.jar:
 export JAVA_HOME=/etc/alternatives/java_sdk/
 

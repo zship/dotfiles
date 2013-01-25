@@ -30,17 +30,18 @@ Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-surround'
 
 Bundle 'Townk/vim-autoclose'
-Bundle 'kana/vim-arpeggio'
+"Bundle 'kana/vim-arpeggio'
 Bundle 'JavaScript-syntax'
 "Bundle 'jelera/vim-javascript-syntax'
 "Bundle 'vim-scripts/ShowMarks'
 Bundle 'ervandew/supertab'
-Bundle 'godlygeek/tabular'
+"Bundle 'godlygeek/tabular'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'groenewege/vim-less'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'lukaszb/vim-web-indent'
 Bundle 'jnurmine/Zenburn'
+"Bundle 'bitc/vim-hdevtools'
 
 
 
@@ -76,17 +77,59 @@ runtime macros/matchit.vim  " better % matching
 
 " ========== Indentation ==========
 
-set noexpandtab
-set smarttab
 set backspace=2
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set smarttab
 set autoindent
 set smartindent
 
 set listchars=tab:»-,trail:·,nbsp:·  " pretty tabs, trailing spaces
 set list                             " show these invisible characters by default
+
+function! PersonalSettings()
+	if (&ft == 'haskell')
+		set expandtab
+		set tabstop=2
+		set softtabstop=2
+		set shiftwidth=2
+		return
+	endif
+
+	set noexpandtab
+	set tabstop=4
+	set softtabstop=4
+	set shiftwidth=4
+endfunction
+
+call PersonalSettings()
+
+function! WorkSettings()
+	set expandtab
+	set tabstop=2
+	set softtabstop=2
+	set shiftwidth=2
+endfunction
+
+function! SetIndentation()
+	let l:projectdir = $HOME.'/Projects'
+	let l:path = expand('%:p')
+
+	let l:workprojects = []
+	call add(l:workprojects, 'autosh')
+	call add(l:workprojects, 'colourlovers')
+	call add(l:workprojects, 'lavaca')
+	call add(l:workprojects, 'twitter-widget')
+
+	for proj in l:workprojects
+		if (l:path =~ l:projectdir.'/'.proj)
+			call WorkSettings()
+			return
+		endif
+	endfor
+
+	call PersonalSettings()
+endfunction
+
+au BufRead,BufEnter * call SetIndentation()
 
 
 
@@ -109,7 +152,16 @@ set directory=$HOME/.vim-backup//
 
 " ========== Look-and-feel ==========
 
-set gfn=Consolas\ 11
+set gfn=Consolas:h12
+if has("gui_gtk2")
+	:set guifont=Consolas\ 11
+elseif has("x11")
+	:set guifont=Consolas\ 11
+elseif has("gui_win32")
+	:set guifont=Consolas\ 11
+elseif has("gui_macvim")
+	:set guifont=Consolas:h12
+endif
 
 if &term =~ '^xterm'
 	" force 256 colors in terminal
@@ -201,6 +253,9 @@ if !exists("autocommands_loaded")
 	au BufNewFile,BufRead * set textwidth=0
 	au BufNewFile,BufRead * set list
 
+	" haskellmode
+	"au BufEnter *.hs compiler ghc
+
 	" validate html on save (syntastic is used, I think)
 	"au BufWritePost *.html Validate
 endif
@@ -290,7 +345,7 @@ vnoremap <c-l> 30l
 
 
 " pinky stretchers. Use lmap to affect all of: insert, command, replace, search
-lnoremap <A-a> :
+lnoremap <A-a> `
 lnoremap <A-z> ~
 lnoremap <A-f> +
 lmap <A-u> {
@@ -303,7 +358,7 @@ lmap <A-k> >
 lnoremap <A-;> =
 lnoremap <A-l> !
 lmap <A-'> "
-lmap <A-n> :
+lmap <A-n> <-
 lmap <A-m> [
 lmap <A-,> ]
 lnoremap <A-q> !
@@ -334,6 +389,8 @@ vnoremap i<A-o> i(
 vnoremap i<A-p> i(
 vnoremap i<A-m> i[
 vnoremap i<A-,> i[
+
+nnoremap <A-z> ~
 
 " indentation command remaps
 vnoremap <A-;> =
@@ -426,10 +483,10 @@ let g:EasyMotion_mapping_j = '<A-j>'
 let g:EasyMotion_mapping_k = '<A-k>'
 
 
-" ---------- vim-easymotion ----------
+" ---------- arpeggio ----------
 
-call arpeggio#load()
-Arpeggio inoremap jk <Esc>
+"call arpeggio#load()
+"Arpeggio inoremap jk <Esc>
 
 
 " ---------- nerdtree ----------

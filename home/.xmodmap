@@ -1,7 +1,7 @@
 !!!!!! Set right alt -> Mode_switch
 !clear mod3
 !keycode 108 = ISO_Level3_Shift
-keycode 108 = Mode_switch Multi_key
+keycode 67 = Mode_switch Multi_key
 !add mod3 = ISO_Level3_Shift
 
 keysym q = q Q kana_TA at
