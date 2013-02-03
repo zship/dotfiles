@@ -152,15 +152,14 @@ set directory=$HOME/.vim-backup//
 
 " ========== Look-and-feel ==========
 
-set gfn=Consolas:h12
 if has("gui_gtk2")
-	:set guifont=Consolas\ 11
+	set guifont=Consolas\ 11
 elseif has("x11")
-	:set guifont=Consolas\ 11
+	set guifont=Consolas\ 11
 elseif has("gui_win32")
-	:set guifont=Consolas\ 11
+	set guifont=Consolas\ 11
 elseif has("gui_macvim")
-	:set guifont=Consolas:h12
+	set guifont=Consolas:h12
 endif
 
 if &term =~ '^xterm'
@@ -211,12 +210,6 @@ set winaltkeys=no   " alt key never hits the window manager
 set completeopt=menuone,menu,longest,preview
 set wildmode=longest,list,full   " bash-like completion
 set wildmenu
-
-" pressing up or down actually replaces the text being evaluated
-" inoremap <expr> <Esc> pumvisible() ? "\<C-e>" : "\<Esc>"
-" inoremap <expr> <CR>  pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-inoremap <expr> <c-j> pumvisible() ? "\<C-n>" : "\<Down>"
-inoremap <expr> <c-k> pumvisible() ? "\<C-p>" : "\<Up>"
 
 
 
@@ -278,22 +271,26 @@ endif
 
 set iminsert=1  " enable :lmap for easier insert/command/search/replace mappings
 set imsearch=-1 " use value of iminsert for searching
-set macmeta " Enable <M-...> keybindings in Mac
+
+if has("gui_macvim")
+	" Enable <M-...> keybindings in Mac
+	set macmeta
+endif
 
 
 " Windows
-nnoremap <Leader>wj <c-w>j
-nnoremap <Leader>wk <c-w>k
-nnoremap <Leader>wl <c-w>l
-nnoremap <Leader>wh <c-w>h
-nnoremap <Leader>wc <c-w>c
-nnoremap <Leader>wx <c-w>x
-nnoremap <Leader>wv <c-w>v
-nnoremap <Leader>ws <c-w>s
-nnoremap <Leader>wr <c-w>r
-nnoremap <Leader>wz <c-w>z
-nnoremap <Leader>wu <c-w>5<
-nnoremap <Leader>wi <c-w>5>
+nnoremap <Leader>wj <C-w>j
+nnoremap <Leader>wk <C-w>k
+nnoremap <Leader>wl <C-w>l
+nnoremap <Leader>wh <C-w>h
+nnoremap <Leader>wc <C-w>c
+nnoremap <Leader>wx <C-w>x
+nnoremap <Leader>wv <C-w>v
+nnoremap <Leader>ws <C-w>s
+nnoremap <Leader>wr <C-w>r
+nnoremap <Leader>wz <C-w>z
+nnoremap <Leader>wu <C-w>5<
+nnoremap <Leader>wi <C-w>5>
 
 " space toggles folds
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':'l')<CR>
@@ -310,8 +307,13 @@ nnoremap <expr> <CR> (&l:buftype == '') ? "o\<Esc>" : "\<CR>"
 inoremap jj <Esc>
 
 " clipboard paste/copy
-inoremap <C-V> <Esc>"+gpa
-vnoremap <C-c> "+y
+if has("gui_macvim")
+	inoremap <D-v> <Esc>"+gpa
+	vnoremap <D-c> "+y
+else
+	inoremap <C-v> <Esc>"+gpa
+	vnoremap <C-c> "+y
+endif
 
 " visual-mode text pasting without filling the default register
 vnoremap r "_dP
@@ -324,27 +326,45 @@ nnoremap ; :<C-^>
 nnoremap : ;
 vnoremap ; :<C-^>
 
-" easier movement commands
-" insert mode j and k are covered under Completion section
-inoremap <c-h> <Left>
-inoremap <c-l> <Right>
-cnoremap <c-j> <Down>
-cnoremap <c-k> <Up>
-cnoremap <c-h> <Left>
-cnoremap <c-l> <Right>
-"nnoremap <c-j> <c-d>
-"nnoremap <c-k> <c-u>
-nnoremap <c-j> 20jzz
-nnoremap <c-k> 20kzz
-nnoremap <c-h> 30h
-nnoremap <c-l> 30l
-vnoremap <c-j> 20j
-vnoremap <c-k> 20k
-vnoremap <c-h> 30h
-vnoremap <c-l> 30l
+" Easier movement commands
+if has("gui_macvim")
+	inoremap <expr> <D-j> pumvisible() ? "\<C-n>" : "\<Down>"
+	inoremap <expr> <D-k> pumvisible() ? "\<C-p>" : "\<Up>"
+	inoremap <D-h> <Left>
+	inoremap <D-l> <Right>
+	cnoremap <D-j> <Down>
+	cnoremap <D-k> <Up>
+	cnoremap <D-h> <Left>
+	cnoremap <D-l> <Right>
+	nnoremap <D-j> 20jzz
+	nnoremap <D-k> 20kzz
+	nnoremap <D-h> 30h
+	nnoremap <D-l> 30l
+	vnoremap <D-j> 20j
+	vnoremap <D-k> 20k
+	vnoremap <D-h> 30h
+	vnoremap <D-l> 30l
+else
+	inoremap <expr> <c-j> pumvisible() ? "\<C-n>" : "\<Down>"
+	inoremap <expr> <c-k> pumvisible() ? "\<C-p>" : "\<Up>"
+	inoremap <c-h> <Left>
+	inoremap <c-l> <Right>
+	cnoremap <c-j> <Down>
+	cnoremap <c-k> <Up>
+	cnoremap <c-h> <Left>
+	cnoremap <c-l> <Right>
+	nnoremap <c-j> 20jzz
+	nnoremap <c-k> 20kzz
+	nnoremap <c-h> 30h
+	nnoremap <c-l> 30l
+	vnoremap <c-j> 20j
+	vnoremap <c-k> 20k
+	vnoremap <c-h> 30h
+	vnoremap <c-l> 30l
+endif
 
 
-" pinky stretchers. Use lmap to affect all of: insert, command, replace, search
+" Pinky stretchers. Use lmap to affect all of: insert, command, replace, search
 lnoremap <A-a> `
 lnoremap <A-z> ~
 lnoremap <A-f> +
@@ -400,56 +420,57 @@ nnoremap <A-,> <<
 vnoremap <A-.> >
 nnoremap <A-.> >>
 
-" keypad with AltGr (custom ~/.xmodmap file)
-lnoremap ナ 7
-lnoremap ニ 8
-lnoremap ラ 9
-lnoremap マ 4
-lnoremap ノ 5
-lnoremap リ 6
-lnoremap モ 1
-lnoremap ネ 2
-lnoremap ル 3
-lnoremap ホ 0
-lnoremap レ +
-lnoremap セ -
+" Fake keypad
+if has("gui_macvim")
+	lnoremap <C-u> 7
+	lnoremap <C-i> 8
+	lnoremap <C-o> 9
+	lnoremap <C-j> 4
+	lnoremap <C-k> 5
+	lnoremap <C-l> 6
+	lnoremap <C-m> 1
+	lnoremap <C-,> 2
+	lnoremap <C-.> 3
+	lnoremap <C-Space> 0
+	lnoremap <C-:> +
+	lnoremap <C-p> -
 
-nnoremap ナ :7<C-^>
-nnoremap ニ :8<C-^>
-nnoremap ラ :9<C-^>
-nnoremap マ :4<C-^>
-nnoremap ノ :5<C-^>
-nnoremap リ :6<C-^>
-nnoremap モ :1<C-^>
-nnoremap ネ :2<C-^>
-nnoremap ル :3<C-^>
-nnoremap ホ :0<C-^>
+	nnoremap <C-u> :7<C-^>
+	nnoremap <C-i> :8<C-^>
+	nnoremap <C-o> :9<C-^>
+	nnoremap <C-j> :4<C-^>
+	nnoremap <C-k> :5<C-^>
+	nnoremap <C-l> :6<C-^>
+	nnoremap <C-m> :1<C-^>
+	nnoremap <C-,> :2<C-^>
+	nnoremap <C-.> :3<C-^>
+	nnoremap <C-Space> :0<C-^>
+else
+	" keypad with AltGr (custom ~/.xmodmap file)
+	lnoremap ナ 7
+	lnoremap ニ 8
+	lnoremap ラ 9
+	lnoremap マ 4
+	lnoremap ノ 5
+	lnoremap リ 6
+	lnoremap モ 1
+	lnoremap ネ 2
+	lnoremap ル 3
+	lnoremap ホ 0
+	lnoremap レ +
+	lnoremap セ -
 
-" Alt-Shift keypad
-"inoremap <A-U> 7
-"inoremap <A-I> 8
-"inoremap <A-O> 9
-"inoremap <A-J> 4
-"inoremap <A-K> 5
-"inoremap <A-L> 6
-"inoremap <A-M> 1
-"inoremap <A-lt> 2
-"inoremap <A->> 3
-"inoremap <A-Y> 0
-"inoremap <A-H> 0
-"inoremap <A-N> 0
-
-"cnoremap <A-;> <CR>zz 
-"nnoremap <A-u> :7
-"nnoremap <A-i> :8
-"nnoremap <A-o> :9
-"nnoremap <A-j> :4
-"nnoremap <A-k> :5
-"nnoremap <A-l> :6
-"nnoremap <A-m> :1
-"nnoremap <A-,> :2
-"nnoremap <A-.> :3
-"nnoremap <A-n> :0
+	nnoremap ナ :7<C-^>
+	nnoremap ニ :8<C-^>
+	nnoremap ラ :9<C-^>
+	nnoremap マ :4<C-^>
+	nnoremap ノ :5<C-^>
+	nnoremap リ :6<C-^>
+	nnoremap モ :1<C-^>
+	nnoremap ネ :2<C-^>
+	nnoremap ル :3<C-^>
+	nnoremap ホ :0<C-^>
+endif
 
 " I use a file with my favorite macros.  This mapping makes using that simpler
 " yank the current line to register c, then switch to the previous window and apply
