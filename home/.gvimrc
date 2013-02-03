@@ -43,29 +43,4 @@ if has("gui_macvim")
 	macmenu Window.Bring\ All\ To\ Front                key=<nop>
 	macmenu Help.MacVim\ Help                           key=<nop>
 	macmenu Help.MacVim\ Website                        key=<nop>
-
-	" keypad with Command+Shift
-	lnoremap <D-U> 7
-	lnoremap <D-I> 8
-	lnoremap <D-O> 9
-	lnoremap <D-J> 4
-	lnoremap <D-K> 5
-	lnoremap <D-L> 6
-	lnoremap <D-M> 1
-	lnoremap <D-lt> 2
-	lnoremap <D->> 3
-	lnoremap <D-S-Space> 0
-	lnoremap <D-:> +
-	lnoremap <D-P> -
-
-	nnoremap <D-U> :7<C-^>
-	nnoremap <D-I> :8<C-^>
-	nnoremap <D-O> :9<C-^>
-	nnoremap <D-J> :4<C-^>
-	nnoremap <D-K> :5<C-^>
-	nnoremap <D-L> :6<C-^>
-	nnoremap <D-M> :1<C-^>
-	nnoremap <D-lt> :2<C-^>
-	nnoremap <D->> :3<C-^>
-	nnoremap <D-S-Space> :0<C-^>
 endif
