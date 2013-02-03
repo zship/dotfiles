@@ -25,7 +25,7 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
 
 Bundle 'tpope/vim-abolish'
-Bundle 'tpope/vim-fugitive'
+"Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-surround'
 
@@ -118,6 +118,7 @@ function! SetIndentation()
 	call add(l:workprojects, 'colourlovers')
 	call add(l:workprojects, 'lavaca')
 	call add(l:workprojects, 'twitter-widget')
+	call add(l:workprojects, 'kbb')
 
 	for proj in l:workprojects
 		if (l:path =~ l:projectdir.'/'.proj)
@@ -391,6 +392,8 @@ lnoremap <A-h> _
 lnoremap <A-g> +
 lnoremap <A-.> ->
 lnoremap <A-/> =>
+" Prevent entering non-breaking space instead of space. Only works on mac.
+lnoremap <A-Space> <Space>
 
 
 " inner-command remaps to correspond to how I map [(" above

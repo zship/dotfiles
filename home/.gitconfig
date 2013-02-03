@@ -24,3 +24,5 @@
 	autosetupmerge = true
 [push]
 	default = upstream
+[merge]
+	tool = meld
