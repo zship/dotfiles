@@ -38,9 +38,12 @@ Bundle 'ervandew/supertab'
 "Bundle 'godlygeek/tabular'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'groenewege/vim-less'
-Bundle 'Lokaltog/vim-powerline'
+"Bundle 'Lokaltog/vim-powerline'
+Bundle 'Lokaltog/powerline'
 Bundle 'lukaszb/vim-web-indent'
 Bundle 'jnurmine/Zenburn'
+Bundle 'closetag.vim'
+Bundle 'goldfeld/vim-seek'
 "Bundle 'bitc/vim-hdevtools'
 
 
@@ -69,6 +72,7 @@ set diffopt=vertical        " diff mode should split vertically
 set nofoldenable            " disable folding
 
 set laststatus=2            " Always show status line for each window
+set noshowmode              " Hide default mode text (powerline handles this)
 set statusline=%F%m%r%h%w\ (%{&ff}){%Y}\ [%l/%L,%v][%p%%]
 
 runtime macros/matchit.vim  " better % matching
@@ -160,7 +164,7 @@ elseif has("x11")
 elseif has("gui_win32")
 	set guifont=Consolas\ 11
 elseif has("gui_macvim")
-	set guifont=Consolas:h12
+	set guifont=Consolas\ for\ Powerline:h12
 endif
 
 if &term =~ '^xterm'
@@ -308,13 +312,13 @@ nnoremap <expr> <CR> (&l:buftype == '') ? "o\<Esc>" : "\<CR>"
 inoremap jj <Esc>
 
 " clipboard paste/copy
-if has("gui_macvim")
-	inoremap <D-v> <Esc>"+gpa
-	vnoremap <D-c> "+y
-else
+"if has("gui_macvim")
+	"inoremap <D-v> <Esc>"+gpa
+	"vnoremap <D-c> "+y
+"else
 	inoremap <C-v> <Esc>"+gpa
 	vnoremap <C-c> "+y
-endif
+"endif
 
 " visual-mode text pasting without filling the default register
 vnoremap r "_dP
@@ -328,24 +332,24 @@ nnoremap : ;
 vnoremap ; :<C-^>
 
 " Easier movement commands
-if has("gui_macvim")
-	inoremap <expr> <D-j> pumvisible() ? "\<C-n>" : "\<Down>"
-	inoremap <expr> <D-k> pumvisible() ? "\<C-p>" : "\<Up>"
-	inoremap <D-h> <Left>
-	inoremap <D-l> <Right>
-	cnoremap <D-j> <Down>
-	cnoremap <D-k> <Up>
-	cnoremap <D-h> <Left>
-	cnoremap <D-l> <Right>
-	nnoremap <D-j> 20jzz
-	nnoremap <D-k> 20kzz
-	nnoremap <D-h> 30h
-	nnoremap <D-l> 30l
-	vnoremap <D-j> 20j
-	vnoremap <D-k> 20k
-	vnoremap <D-h> 30h
-	vnoremap <D-l> 30l
-else
+"if has("gui_macvim")
+	"inoremap <expr> <D-j> pumvisible() ? "\<C-n>" : "\<Down>"
+	"inoremap <expr> <D-k> pumvisible() ? "\<C-p>" : "\<Up>"
+	"inoremap <D-h> <Left>
+	"inoremap <D-l> <Right>
+	"cnoremap <D-j> <Down>
+	"cnoremap <D-k> <Up>
+	"cnoremap <D-h> <Left>
+	"cnoremap <D-l> <Right>
+	"nnoremap <D-j> 20jzz
+	"nnoremap <D-k> 20kzz
+	"nnoremap <D-h> 30h
+	"nnoremap <D-l> 30l
+	"vnoremap <D-j> 20j
+	"vnoremap <D-k> 20k
+	"vnoremap <D-h> 30h
+	"vnoremap <D-l> 30l
+"else
 	inoremap <expr> <c-j> pumvisible() ? "\<C-n>" : "\<Down>"
 	inoremap <expr> <c-k> pumvisible() ? "\<C-p>" : "\<Up>"
 	inoremap <c-h> <Left>
@@ -362,7 +366,7 @@ else
 	vnoremap <c-k> 20k
 	vnoremap <c-h> 30h
 	vnoremap <c-l> 30l
-endif
+"endif
 
 
 " Pinky stretchers. Use lmap to affect all of: insert, command, replace, search
@@ -424,31 +428,31 @@ vnoremap <A-.> >
 nnoremap <A-.> >>
 
 " Fake keypad
-if has("gui_macvim")
-	lnoremap <C-u> 7
-	lnoremap <C-i> 8
-	lnoremap <C-o> 9
-	lnoremap <C-j> 4
-	lnoremap <C-k> 5
-	lnoremap <C-l> 6
-	lnoremap <C-m> 1
-	lnoremap <C-,> 2
-	lnoremap <C-.> 3
-	lnoremap <C-Space> 0
-	lnoremap <C-:> +
-	lnoremap <C-p> -
+"if has("gui_macvim")
+	"lnoremap <C-u> 7
+	"lnoremap <C-i> 8
+	"lnoremap <C-o> 9
+	"lnoremap <C-j> 4
+	"lnoremap <C-k> 5
+	"lnoremap <C-l> 6
+	"lnoremap <C-m> 1
+	"lnoremap <C-,> 2
+	"lnoremap <C-.> 3
+	"lnoremap <C-Space> 0
+	"lnoremap <C-:> +
+	"lnoremap <C-p> -
 
-	nnoremap <C-u> :7<C-^>
-	nnoremap <C-i> :8<C-^>
-	nnoremap <C-o> :9<C-^>
-	nnoremap <C-j> :4<C-^>
-	nnoremap <C-k> :5<C-^>
-	nnoremap <C-l> :6<C-^>
-	nnoremap <C-m> :1<C-^>
-	nnoremap <C-,> :2<C-^>
-	nnoremap <C-.> :3<C-^>
-	nnoremap <C-Space> :0<C-^>
-else
+	"nnoremap <C-u> :7<C-^>
+	"nnoremap <C-i> :8<C-^>
+	"nnoremap <C-o> :9<C-^>
+	"nnoremap <C-j> :4<C-^>
+	"nnoremap <C-k> :5<C-^>
+	"nnoremap <C-l> :6<C-^>
+	"nnoremap <C-m> :1<C-^>
+	"nnoremap <C-,> :2<C-^>
+	"nnoremap <C-.> :3<C-^>
+	"nnoremap <C-Space> :0<C-^>
+"else
 	" keypad with AltGr (custom ~/.xmodmap file)
 	lnoremap ナ 7
 	lnoremap ニ 8
@@ -473,7 +477,7 @@ else
 	nnoremap ネ :2<C-^>
 	nnoremap ル :3<C-^>
 	nnoremap ホ :0<C-^>
-endif
+"endif
 
 " I use a file with my favorite macros.  This mapping makes using that simpler
 " yank the current line to register c, then switch to the previous window and apply
@@ -604,6 +608,7 @@ let g:markdown_fenced_languages = ['js=javascript']
 
 " ---------- vim-powerline ----------
 
+set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
 let g:Powerline_symbols = 'fancy'
 let g:Powerline_stl_path_style = 'filename'
 

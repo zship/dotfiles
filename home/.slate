@@ -1,0 +1,26 @@
+config defaultToCurrentScreen true
+config nudgePercentOf screenSize
+config resizePercentOf screenSize
+config windowHintsIgnoreHiddenWindows false
+config windowHintsShowIcons true
+config windowHintsSpread true
+config windowHintsSpreadSearchWidth 100
+config windowHintsSpreadSearchHeight 100
+
+# Push Bindings
+bind u:ctrl;alt  push up bar-resize:screenSizeY
+bind .:ctrl;alt  push right bar-resize:screenSizeX/2
+bind ,:ctrl;alt  push left  bar-resize:screenSizeX/2
+
+# Throw Bindings
+bind l:ctrl;alt;shift  throw right resize
+bind h:ctrl;alt;shift  throw left resize
+
+# Focus Bindings
+bind l:ctrl;alt  focus right
+bind h:ctrl;alt  focus left
+bind j:ctrl;alt  focus behind
+bind k:ctrl;alt  focus behind
+
+# Window Hints
+bind space:ctrl;alt  hint

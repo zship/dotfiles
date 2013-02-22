@@ -7,7 +7,7 @@ fi
 
 # enable programmable completion features
 if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+	. /etc/bash_completion
 fi
 
 
@@ -52,8 +52,9 @@ esac
 # ------------------------------------------
 
 PATH=$PATH:$HOME/bin/:/usr/local/ant/bin/:/sbin/:$HOME/.cabal/bin/:/usr/local/share/npm/bin
+PATH=$PATH:$HOME/adt-bundle-mac-x86_64/sdk/platform-tools:$HOME/adt-bundle-mac-x86_64/sdk/tools
 CLASSPATH=/usr/java/jdk/lib/rt.jar:/usr/java/jdk/lib/tools.jar:
-export JAVA_HOME=/etc/alternatives/java_sdk/
+#export JAVA_HOME=/etc/alternatives/java_sdk/
 
 
 

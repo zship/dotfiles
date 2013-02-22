@@ -2,7 +2,6 @@
 	name = Zach Shipley
 	;email = zach@openskysoftware.com
 	email = zach@zachshipley.com
-
 [alias]
 	lol = log --graph --decorate --pretty=oneline --abbrev-commit
 	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
