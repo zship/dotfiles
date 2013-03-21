@@ -22,7 +22,7 @@ Bundle 'zship/vim-easymotion'
 
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic'
+Bundle 'scrooloose/syntastic', '2.2.0'
 
 Bundle 'tpope/vim-abolish'
 "Bundle 'tpope/vim-fugitive'
@@ -43,7 +43,8 @@ Bundle 'Lokaltog/powerline'
 Bundle 'lukaszb/vim-web-indent'
 Bundle 'jnurmine/Zenburn'
 Bundle 'closetag.vim'
-Bundle 'goldfeld/vim-seek'
+Bundle 'editorconfig/editorconfig-vim'
+"Bundle 'goldfeld/vim-seek'
 "Bundle 'bitc/vim-hdevtools'
 
 
@@ -86,55 +87,13 @@ set smarttab
 set autoindent
 set smartindent
 
+set noexpandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+
 set listchars=tab:»-,trail:·,nbsp:·  " pretty tabs, trailing spaces
 set list                             " show these invisible characters by default
-
-function! PersonalSettings()
-	if (&ft == 'haskell')
-		set expandtab
-		set tabstop=2
-		set softtabstop=2
-		set shiftwidth=2
-		return
-	endif
-
-	set noexpandtab
-	set tabstop=4
-	set softtabstop=4
-	set shiftwidth=4
-endfunction
-
-call PersonalSettings()
-
-function! WorkSettings()
-	set expandtab
-	set tabstop=2
-	set softtabstop=2
-	set shiftwidth=2
-endfunction
-
-function! SetIndentation()
-	let l:projectdir = $HOME.'/Projects'
-	let l:path = expand('%:p')
-
-	let l:workprojects = []
-	call add(l:workprojects, 'autosh')
-	call add(l:workprojects, 'colourlovers')
-	call add(l:workprojects, 'lavaca')
-	call add(l:workprojects, 'twitter-widget')
-	call add(l:workprojects, 'kbb')
-
-	for proj in l:workprojects
-		if (l:path =~ l:projectdir.'/'.proj)
-			call WorkSettings()
-			return
-		endif
-	endfor
-
-	call PersonalSettings()
-endfunction
-
-au BufRead,BufEnter * call SetIndentation()
 
 
 
@@ -642,6 +601,10 @@ nnoremap <Leader>ar :Ant reload<CR><CR>
 
 " Eclim shortcuts
 nnoremap <Leader>pr :ProjectRefresh<CR>
+
+
+" ---------- editorconfig ----------
+let g:EditorConfig_core_mode = 'python_external'
 
 
 
