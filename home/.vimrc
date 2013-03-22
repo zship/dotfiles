@@ -388,29 +388,29 @@ nnoremap <A-.> >>
 
 " Fake keypad
 "if has("gui_macvim")
-	"lnoremap <C-u> 7
-	"lnoremap <C-i> 8
-	"lnoremap <C-o> 9
-	"lnoremap <C-j> 4
-	"lnoremap <C-k> 5
-	"lnoremap <C-l> 6
-	"lnoremap <C-m> 1
-	"lnoremap <C-,> 2
-	"lnoremap <C-.> 3
-	"lnoremap <C-Space> 0
-	"lnoremap <C-:> +
-	"lnoremap <C-p> -
+	"lnoremap <D-u> 7
+	"lnoremap <D-i> 8
+	"lnoremap <D-o> 9
+	"lnoremap <D-j> 4
+	"lnoremap <D-k> 5
+	"lnoremap <D-l> 6
+	"lnoremap <D-m> 1
+	"lnoremap <D-,> 2
+	"lnoremap <D-.> 3
+	"lnoremap <D-Space> 0
+	"lnoremap <D-:> +
+	"lnoremap <D-p> -
 
-	"nnoremap <C-u> :7<C-^>
-	"nnoremap <C-i> :8<C-^>
-	"nnoremap <C-o> :9<C-^>
-	"nnoremap <C-j> :4<C-^>
-	"nnoremap <C-k> :5<C-^>
-	"nnoremap <C-l> :6<C-^>
-	"nnoremap <C-m> :1<C-^>
-	"nnoremap <C-,> :2<C-^>
-	"nnoremap <C-.> :3<C-^>
-	"nnoremap <C-Space> :0<C-^>
+	"nnoremap <D-u> :7<C-^>
+	"nnoremap <D-i> :8<C-^>
+	"nnoremap <D-o> :9<C-^>
+	"nnoremap <D-j> :4<C-^>
+	"nnoremap <D-k> :5<C-^>
+	"nnoremap <D-l> :6<C-^>
+	"nnoremap <D-m> :1<C-^>
+	"nnoremap <D-,> :2<C-^>
+	"nnoremap <D-.> :3<C-^>
+	"nnoremap <D-Space> :0<C-^>
 "else
 	" keypad with AltGr (custom ~/.xmodmap file)
 	lnoremap ナ 7
