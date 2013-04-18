@@ -57,6 +57,13 @@ CLASSPATH=/usr/java/jdk/lib/rt.jar:/usr/java/jdk/lib/tools.jar:
 #export JAVA_HOME=/etc/alternatives/java_sdk/
 
 
+# ------------------------------------------
+# Custom Tab Completion
+# ------------------------------------------
+
+eval "$(grunt --completion=bash)"
+source ~/.git-completion.bash
+
 
 # ------------------------------------------
 # Aliases & Functions
