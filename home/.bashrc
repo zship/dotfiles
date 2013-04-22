@@ -64,6 +64,13 @@ fi
 PATH=$PATH:$adbpath/platform-tools:$adbpath/tools
 
 
+# ------------------------------------------
+# Custom Tab Completion
+# ------------------------------------------
+
+eval "$(grunt --completion=bash)"
+source ~/.git-completion.bash
+
 
 # ------------------------------------------
 # Aliases & Functions
