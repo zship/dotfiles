@@ -52,9 +52,16 @@ esac
 # ------------------------------------------
 
 PATH=$PATH:$HOME/bin/:/usr/local/ant/bin/:/sbin/:$HOME/.cabal/bin/:/usr/local/share/npm/bin
-PATH=$PATH:$HOME/adt-bundle-mac-x86_64/sdk/platform-tools:$HOME/adt-bundle-mac-x86_64/sdk/tools
 CLASSPATH=/usr/java/jdk/lib/rt.jar:/usr/java/jdk/lib/tools.jar:
 #export JAVA_HOME=/etc/alternatives/java_sdk/
+
+adbpath=''
+if [ -e $HOME/android-sdk-linux ]; then
+	adbpath="$HOME/android-sdk-linux"
+elif [ -e $HOME/adt-bundle-mac-x86_64/sdk ]; then
+	adbpath="$HOME/adt-bundle-mac-x86_64"
+fi
+PATH=$PATH:$adbpath/platform-tools:$adbpath/tools
 
 
 
@@ -80,7 +87,7 @@ if [ -x /usr/bin/atop ]; then
 	alias top='atop'
 fi
 
-alias ll='ls -alF'
+alias ll='ls -alFh'
 alias la='ls -A'
 alias l='ls -CF'
 

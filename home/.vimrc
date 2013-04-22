@@ -22,7 +22,7 @@ Bundle 'zship/vim-easymotion'
 
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic', '2.2.0'
+Bundle 'scrooloose/syntastic', '3.0.0'
 
 Bundle 'tpope/vim-abolish'
 "Bundle 'tpope/vim-fugitive'
@@ -35,19 +35,23 @@ Bundle 'Townk/vim-autoclose'
 Bundle 'pangloss/vim-javascript'
 "Bundle 'jelera/vim-javascript-syntax'
 "Bundle 'vim-scripts/ShowMarks'
-Bundle 'ervandew/supertab'
+"Bundle 'ervandew/supertab'
 "Bundle 'godlygeek/tabular'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'groenewege/vim-less'
 "Bundle 'Lokaltog/vim-powerline'
-Bundle 'Lokaltog/powerline'
+Bundle 'Lokaltog/powerline', 'd81d6f163f5d5d24136920a1cc2f69803b78b1c7'
 "Bundle 'lukaszb/vim-web-indent'
 Bundle 'jnurmine/Zenburn'
-Bundle 'closetag.vim'
+"Bundle 'closetag.vim'
+Bundle 'Raimondi/delimitMate'
 Bundle 'editorconfig/editorconfig-vim'
+"Bundle 'Rip-Rip/clang_complete'
 "Bundle 'goldfeld/vim-seek'
-"Bundle 'bitc/vim-hdevtools'
 
+Bundle 'Valloric/YouCompleteMe'
+Bundle 'ujihisa/neco-ghc'
+Bundle 'bitc/vim-hdevtools'
 
 
 " ========== Syntax ==========
@@ -88,13 +92,27 @@ set smarttab
 set autoindent
 set smartindent
 
-set noexpandtab
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-
 set listchars=tab:»-,trail:·,nbsp:·  " pretty tabs, trailing spaces
 set list                             " show these invisible characters by default
+
+function! PersonalSettings()
+	if (&ft == 'haskell')
+		set expandtab
+		set tabstop=2
+		set softtabstop=2
+		set shiftwidth=2
+		return
+	endif
+
+	set noexpandtab
+	set tabstop=4
+	set softtabstop=4
+	set shiftwidth=4
+endfunction
+
+call PersonalSettings()
+
+au BufEnter,BufRead * call PersonalSettings()
 
 
 
@@ -118,9 +136,9 @@ set directory=$HOME/.vim-backup//
 " ========== Look-and-feel ==========
 
 if has("gui_gtk2")
-	set guifont=Consolas\ 11
+	set guifont=Consolas\ for\ Powerline\ 11
 elseif has("x11")
-	set guifont=Consolas\ 11
+	set guifont=Consolas\ for\ Powerline\ 11
 elseif has("gui_win32")
 	set guifont=Consolas\ 11
 elseif has("gui_macvim")
@@ -216,6 +234,8 @@ if !exists("autocommands_loaded")
 
 	" validate html on save (syntastic is used, I think)
 	"au BufWritePost *.html Validate
+	
+	au BufEnter,BufRead *.hs setlocal omnifunc=necoghc#omnifunc
 endif
 
 
@@ -276,7 +296,7 @@ inoremap jj <Esc>
 	"inoremap <D-v> <Esc>"+gpa
 	"vnoremap <D-c> "+y
 "else
-	inoremap <C-v> <Esc>"+gpa
+	inoremap <C-v> <Esc>"+gpi
 	vnoremap <C-c> "+y
 "endif
 
@@ -389,29 +409,29 @@ nnoremap <A-.> >>
 
 " Fake keypad
 "if has("gui_macvim")
-	"lnoremap <D-u> 7
-	"lnoremap <D-i> 8
-	"lnoremap <D-o> 9
-	"lnoremap <D-j> 4
-	"lnoremap <D-k> 5
-	"lnoremap <D-l> 6
-	"lnoremap <D-m> 1
-	"lnoremap <D-,> 2
-	"lnoremap <D-.> 3
-	"lnoremap <D-Space> 0
-	"lnoremap <D-:> +
-	"lnoremap <D-p> -
+	"lnoremap <C-u> 7
+	"lnoremap <C-i> 8
+	"lnoremap <C-o> 9
+	"lnoremap <C-j> 4
+	"lnoremap <C-k> 5
+	"lnoremap <C-l> 6
+	"lnoremap <C-m> 1
+	"lnoremap <C-,> 2
+	"lnoremap <C-.> 3
+	"lnoremap <C-Space> 0
+	"lnoremap <C-:> +
+	"lnoremap <C-p> -
 
-	"nnoremap <D-u> :7<C-^>
-	"nnoremap <D-i> :8<C-^>
-	"nnoremap <D-o> :9<C-^>
-	"nnoremap <D-j> :4<C-^>
-	"nnoremap <D-k> :5<C-^>
-	"nnoremap <D-l> :6<C-^>
-	"nnoremap <D-m> :1<C-^>
-	"nnoremap <D-,> :2<C-^>
-	"nnoremap <D-.> :3<C-^>
-	"nnoremap <D-Space> :0<C-^>
+	"nnoremap <C-u> :7<C-^>
+	"nnoremap <C-i> :8<C-^>
+	"nnoremap <C-o> :9<C-^>
+	"nnoremap <C-j> :4<C-^>
+	"nnoremap <C-k> :5<C-^>
+	"nnoremap <C-l> :6<C-^>
+	"nnoremap <C-m> :1<C-^>
+	"nnoremap <C-,> :2<C-^>
+	"nnoremap <C-.> :3<C-^>
+	"nnoremap <C-Space> :0<C-^>
 "else
 	" keypad with AltGr (custom ~/.xmodmap file)
 	lnoremap ナ 7
@@ -514,7 +534,42 @@ xmap <silent> ie <Plug>CamelCaseMotion_ie
 
 " ---------- clang_complete ----------
 
-let g:clang_complete_auto=0
+"let g:clang_complete_auto = 0
+let g:clang_use_library = 1
+let g:clang_library_path = "/usr/local/lib"
+
+
+" ---------- YouCompleteMe -----------
+
+" Pulled/modified from supertab
+function! ShouldComplete()
+	" Determines if completion should be kicked off at the current location.
+	let line = getline('.')
+	let cnum = col('.')
+
+	let pre = cnum >= 2 ? line[:cnum - 2] : ''
+	let noCompleteAfter = ['^', '\s']
+	let complAfterType = type(noCompleteAfter)
+	for pattern in noCompleteAfter
+		if pre =~ pattern . '$'
+			return 0
+		endif
+	endfor
+	return 1
+endfunction
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-x>\<C-o>\<C-p>" : ShouldComplete() ? "\<C-x>\<C-o>\<C-p>" : "\<Tab>"
+"let g:ycm_key_invoke_completion = '<Tab>'
+let g:ycm_key_list_select_completion = []
+let g:ycm_key_list_previous_completion = []
+let g:ycm_min_num_of_chars_for_completion = 2
+let g:ycm_add_preview_to_completeopt = 1
+let g:ycm_autoclose_preview_window_after_completion = 1
+
+
+" ---------- neco-ghc -----------
+
+let g:necoghc_enable_detailed_browse = 1
 
 
 " ---------- supertab ----------
@@ -538,6 +593,8 @@ let g:syntastic_mode_map = {
 \}
 
 let g:syntastic_javascript_checker='jshint'
+let g:syntastic_haskell_checker='ghc-mod'
+let g:syntastic_check_on_open = 1
 
 
 " ---------- taglist (if I start using it again) ----------
@@ -602,10 +659,6 @@ nnoremap <Leader>ar :Ant reload<CR><CR>
 
 " Eclim shortcuts
 nnoremap <Leader>pr :ProjectRefresh<CR>
-
-
-" ---------- editorconfig ----------
-let g:EditorConfig_core_mode = 'python_external'
 
 
 
