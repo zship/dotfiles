@@ -25,6 +25,8 @@ com! -nargs=? -bang   BundleClean
 com! -nargs=0         BundleDocs 
 \ call vundle#installer#helptags(g:bundles)
 
+" Aliases
+com! BundleUpdate BundleInstall!
 
 if (has('signs'))
 sign define Vu_error    text=!  texthl=Error
@@ -43,8 +45,4 @@ func! vundle#rc(...) abort
   let g:vundle_log = []
   let g:vundle_changelog = ['Updated Bundles:']
   call vundle#config#init()
-endf
-
-func! vundle#hasBundle(bundle_install_name)
-  return exists('g:bundles') && has_key(g:bundles, a:bundle_install_name)
 endf

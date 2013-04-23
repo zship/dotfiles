@@ -3,7 +3,7 @@ func! vundle#installer#new(bang, ...) abort
         \ g:bundles :
         \ map(copy(a:000), 'vundle#config#bundle(v:val, {})')
 
-  let names = vundle#scripts#bundle_names(map(values(bundles), 'v:val.name_spec'))
+  let names = vundle#scripts#bundle_names(map(copy(bundles), 'v:val.name_spec'))
   call vundle#scripts#view('Installer',['" Installing bundles to '.expand(g:bundle_dir, 1)], names +  ['Helptags'])
 
   call s:process(a:bang, (a:bang ? 'add!' : 'add'))
@@ -39,7 +39,7 @@ func! s:process(bang, cmd)
     setl nomodified
   endfor
 
-   redraw
+  redraw
   echo 'Done! '.msg
 endf
 
@@ -89,27 +89,18 @@ func! s:sign(status)
   exe ":sign place ".line('.')." line=".line('.')." name=Vu_". a:status ." buffer=" . bufnr("%")
 endf
 
-func! vundle#installer#install_and_require(bang, name_spec) abort
-  let result = vundle#installer#install(a:bang, a:name_spec)
-  let opts = vundle#config#parse_name_spec(a:name_spec)
-  if    !has_key(g:bundles, opts.name) 
-  \  || g:bundles[opts.name].name_spec != opts.name_spec
-    let b = vundle#config#bundle(opts.name, opts)
-  endif
+func! vundle#installer#install_and_require(bang, name) abort
+  let result = vundle#installer#install(a:bang, a:name)
+  let b = vundle#config#bundle(a:name, {})
   call vundle#installer#helptags([b])
   call vundle#config#require([b])
   return result
 endf
 
-func! vundle#installer#install(bang, name_spec) abort
+func! vundle#installer#install(bang, name) abort
   if !isdirectory(g:bundle_dir) | call mkdir(g:bundle_dir, 'p') | endif
-  let opts = vundle#config#parse_name_spec(a:name_spec)
-  if    has_key(g:bundles, opts.name)
-  \  && g:bundles[opts.name].name_spec == opts.name_spec
-    let b = g:bundles[opts.name]
-  else
-    let b = vundle#config#init_bundle(opts.name, opts)
-  endif
+
+  let b = vundle#config#init_bundle(a:name, {})
 
   return s:sync(a:bang, b)
 endf
@@ -120,7 +111,7 @@ func! vundle#installer#docs() abort
 endf
 
 func! vundle#installer#helptags(bundles) abort
-  let bundle_dirs = map(values(a:bundles),'v:val.rtpath()')
+  let bundle_dirs = map(copy(a:bundles),'v:val.rtpath')
   let help_dirs = filter(bundle_dirs, 's:has_doc(v:val)')
 
   call s:log('')
@@ -142,8 +133,10 @@ endf
 
 
 func! vundle#installer#clean(bang) abort
-  let bundle_dirs = map(values(g:bundles), 'v:val.path()') 
-  let all_dirs = v:version >= 702 ? split(globpath(g:bundle_dir, '*', 1), "\n") : split(globpath(g:bundle_dir, '*'), "\n")
+  let bundle_dirs = map(copy(g:bundles), 'v:val.path()') 
+  let all_dirs = (v:version > 702 || (v:version == 702 && has("patch51")))
+  \   ? split(globpath(g:bundle_dir, '*', 1), "\n")
+  \   : split(globpath(g:bundle_dir, '*'), "\n")
   let x_dirs = filter(all_dirs, '0 > index(bundle_dirs, v:val)')
 
   if empty(x_dirs)
@@ -167,7 +160,6 @@ func! vundle#installer#clean(bang) abort
       call s:process(a:bang, 'D')
     endif
   endif
-  "TODO add checks to ensure bundle's remote origin is same as specified uri
 endf
 
 
@@ -197,7 +189,7 @@ endf
 func! s:has_doc(rtp) abort
   return isdirectory(a:rtp.'/doc')
   \   && (!filereadable(a:rtp.'/doc/tags') || filewritable(a:rtp.'/doc/tags'))
-  \   && v:version >= 702
+  \   && (v:version > 702 || (v:version == 702 && has("patch51")))
   \     ? !(empty(glob(a:rtp.'/doc/*.txt', 1)) && empty(glob(a:rtp.'/doc/*.??x', 1)))
   \     : !(empty(glob(a:rtp.'/doc/*.txt')) && empty(glob(a:rtp.'/doc/*.??x')))
 endf
@@ -213,33 +205,19 @@ func! s:helptags(rtp) abort
 endf
 
 func! s:sync(bang, bundle) abort
-  "bundle dev friendly:
-  "if bundle has local flag - skip it as it's files is not managed by vundle
-  if get(a:bundle, 'local', 0) == 1
-    return 'todate'
-  endif
   let git_dir = expand(a:bundle.path().'/.git/', 1)
-  let target_treeish = get(a:bundle, 'tree-ish', 'master')
-  let cd = 'cd '
-  if (has('win32') || has('win64'))
-    let cd = 'cd /d ' " add /d switch to change drives
-  endif
-  if isdirectory(git_dir)
+  if isdirectory(git_dir) || filereadable(expand(a:bundle.path().'/.git', 1))
     if !(a:bang) | return 'todate' | endif
-    let cmd = cd . shellescape(a:bundle.path()).' && git checkout master && git pull --ff-only --all && git checkout '.shellescape(target_treeish)
+    let cmd = 'cd '.shellescape(a:bundle.path()).' && git pull && git submodule update --init --recursive'
 
-    let get_current_sha = cd . shellescape(a:bundle.path()).' && git rev-parse HEAD'
+    let cmd = g:shellesc_cd(cmd)
+
+    let get_current_sha = 'cd '.shellescape(a:bundle.path()).' && git rev-parse HEAD'
+    let get_current_sha = g:shellesc_cd(get_current_sha)
     let initial_sha = s:system(get_current_sha)[0:15]
-    "make sure non-hash will not be accidentally matched
-    if (len(target_treeish) > 5 && stridx(initial_sha, target_treeish) == 0) | return 'todate' | endif
   else
-    let cmd = 'git clone '.a:bundle.uri.' '.shellescape(a:bundle.path())
-    let cmd .= ' && '. cd . shellescape(a:bundle.path()).' && git checkout '.shellescape(target_treeish) 
+    let cmd = 'git clone --recursive '.shellescape(a:bundle.uri).' '.shellescape(a:bundle.path())
     let initial_sha = ''
-  endif
-
-  if (has('win32') || has('win64'))
-    let cmd = '"'.cmd.'"'   " enclose in quotesi
   endif
 
   let out = s:system(cmd)
@@ -264,6 +242,25 @@ func! s:sync(bang, bundle) abort
 
   call add(g:updated_bundles, [initial_sha, updated_sha, a:bundle])
   return 'updated'
+endf
+
+func! g:shellesc(cmd) abort
+  if (has('win32') || has('win64'))
+    if &shellxquote != '('                           " workaround for patch #445
+      return '"'.a:cmd.'"'                          " enclose in quotes so && joined cmds work
+    endif
+  endif
+  return a:cmd
+endf
+
+func! g:shellesc_cd(cmd) abort
+  if (has('win32') || has('win64'))
+    let cmd = substitute(a:cmd, '^cd ','cd /d ','')  " add /d switch to change drives
+    let cmd = g:shellesc(cmd)
+    return cmd
+  else
+    return a:cmd
+  endif
 endf
 
 func! s:system(cmd) abort

@@ -48,23 +48,6 @@ esac
 
 
 # ------------------------------------------
-# Environment Variables
-# ------------------------------------------
-
-PATH=$PATH:$HOME/bin/:/usr/local/ant/bin/:/sbin/:$HOME/.cabal/bin/:/usr/local/share/npm/bin
-CLASSPATH=/usr/java/jdk/lib/rt.jar:/usr/java/jdk/lib/tools.jar:
-#export JAVA_HOME=/etc/alternatives/java_sdk/
-
-adbpath=''
-if [ -e $HOME/android-sdk-linux ]; then
-	adbpath="$HOME/android-sdk-linux"
-elif [ -e $HOME/adt-bundle-mac-x86_64/sdk ]; then
-	adbpath="$HOME/adt-bundle-mac-x86_64"
-fi
-PATH=$PATH:$adbpath/platform-tools:$adbpath/tools
-
-
-# ------------------------------------------
 # Custom Tab Completion
 # ------------------------------------------
 

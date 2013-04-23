@@ -95,24 +95,19 @@ set smartindent
 set listchars=tab:»-,trail:·,nbsp:·  " pretty tabs, trailing spaces
 set list                             " show these invisible characters by default
 
-function! PersonalSettings()
-	if (&ft == 'haskell')
-		set expandtab
-		set tabstop=2
-		set softtabstop=2
-		set shiftwidth=2
-		return
-	endif
+set noexpandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 
-	set noexpandtab
-	set tabstop=4
-	set softtabstop=4
-	set shiftwidth=4
+function! HaskellSettings()
+	set expandtab
+	set tabstop=2
+	set softtabstop=2
+	set shiftwidth=2
 endfunction
 
-call PersonalSettings()
-
-au BufEnter,BufRead * call PersonalSettings()
+au BufEnter,BufRead *.hs call HaskellSettings()
 
 
 
