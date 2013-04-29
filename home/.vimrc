@@ -156,10 +156,14 @@ colorscheme zenburn
 
 " Zenburn customizations
 " lighter line number bg
-hi LineNr guibg=#333
-hi SignColumn guibg=#333
+hi LineNr guibg=#323232
+hi SignColumn guibg=#323232
+" subtle vertical splits
+hi VertSplit guifg=#323232 guibg=#323232
 " for signs to match signcolumn; errors stand out more anyhow
-hi Error guibg=#333
+hi Error guibg=#323232
+hi Todo guibg=#323232
+hi SignColumn guibg=#323232
 " un-bold current line number
 hi CursorLineNr gui=none term=none
 " old directory
