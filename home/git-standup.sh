@@ -13,9 +13,9 @@
 AUTHOR="zach"
 
 if [ `date +%w` == 1 ] ; then
-  LIMIT="3 days"
+  LIMIT="last friday midnight"
 else
-  LIMIT="yesterday"
+  LIMIT="yesterday midnight"
 fi
 
-git lg --since "$LIMIT" --author $AUTHOR
+git lg --since "$LIMIT" --until "midnight" --author $AUTHOR
