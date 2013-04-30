@@ -102,7 +102,6 @@ set list                             " show these invisible characters by defaul
 
 " use editorconfig plugin, but first apply my own settings in case there is no
 " .editorconfig file
-autocmd! editorconfig
 function! IndentationSettings()
 	if (&ft == 'haskell')
 		set expandtab
