@@ -51,13 +51,37 @@ esac
 # Custom Tab Completion
 # ------------------------------------------
 
-eval "$(grunt --completion=bash)"
+eval "$(grunt --completion=bash )"
 source ~/.git-completion.bash
 
 
 # ------------------------------------------
 # Aliases & Functions
 # ------------------------------------------
+
+# borrow bash complete functions for my own aliases
+# to see existing complete function names: `compgen -F <tab>`
+# http://ubuntuforums.org/showthread.php?t=733397
+borrow_completion() {
+	local borrower_function_name="$1"
+	local borrowed_function_name="$2"
+	local arg_count=$(($#-3))
+	shift 2
+	local gen_function_name="__borrowed_${borrowed_function_name}_FOR_${borrower_function_name}"
+	local args="$*"
+	local gen_function="
+		$gen_function_name () {
+			COMP_LINE=\"$@\${COMP_LINE#$borrower_function_name}\"
+			let COMP_POINT+=$((${#args}-${#borrower_function_name}))
+			((COMP_CWORD+=$arg_count))
+			COMP_WORDS=( "$@" \${COMP_WORDS[@]:1} )
+			"$borrowed_function_name"
+			return 0
+		}"
+	eval "$gen_function"
+	#echo "$gen_function"
+	complete -F $gen_function_name $borrower_function_name
+}
 
 # homesick is a dotfile sync program: https://github.com/andsens/homeshick
 if [ -f "$HOME/.homeshick" ]; then
@@ -66,11 +90,11 @@ fi
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+	alias ls='ls --color=auto'
+	alias grep='grep --color=auto'
+	alias fgrep='fgrep --color=auto'
+	alias egrep='egrep --color=auto'
 fi
 
 if [ -x /usr/bin/atop ]; then
@@ -127,6 +151,8 @@ elif [ -x /usr/bin/apt-get ]; then
 		echo '-------------------------'
 		sudo apt-cache show "$1" | grep -e '^Package:' -e '^Section:' -e '^Version:' -e '^$'
 	}
+	borrow_completion pms _apt_cache apt-cache show
+
 	pmf() {
 		echo 'Installed Package Matches:'
 		echo '-------------------------'
@@ -140,9 +166,15 @@ elif [ -x /usr/bin/apt-get ]; then
 		echo '---------------'
 		dpkg-query -L "$1"
 	}
+	borrow_completion pmf _apt_cache apt-cache show
+
 	alias pmi='sudo apt-get install'
+	borrow_completion pmi _apt_get apt-get install
+
 	alias pmu='sudo apt-get update && sudo apt-get upgrade'
+
 	alias pmr='sudo apt-get remove'
+	borrow_completion pmr _apt_get apt-get remove
 elif [ -x /usr/local/bin/brew ]; then
 	pms() {
 		echo 'Partial Matches'

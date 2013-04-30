@@ -19,10 +19,12 @@ Bundle 'vim-scripts/bufexplorer.zip'
 Bundle 'zship/CamelCaseMotion'
 Bundle 'zship/vim-java-annotation-indent'
 Bundle 'zship/vim-easymotion'
+Bundle 'michaeljsmith/vim-indent-object'
 
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic', '3.0.0'
+Bundle 'scrooloose/syntastic'
+"Bundle 'scrooloose/syntastic', '3.0.0'
 
 Bundle 'tpope/vim-abolish'
 "Bundle 'tpope/vim-fugitive'
@@ -40,7 +42,8 @@ Bundle 'pangloss/vim-javascript'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'groenewege/vim-less'
 "Bundle 'Lokaltog/vim-powerline'
-Bundle 'Lokaltog/powerline', 'd81d6f163f5d5d24136920a1cc2f69803b78b1c7'
+Bundle 'Lokaltog/powerline'
+"Bundle 'Lokaltog/powerline', 'd81d6f163f5d5d24136920a1cc2f69803b78b1c7'
 "Bundle 'lukaszb/vim-web-indent'
 Bundle 'jnurmine/Zenburn'
 "Bundle 'closetag.vim'
@@ -52,6 +55,8 @@ Bundle 'editorconfig/editorconfig-vim'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'ujihisa/neco-ghc'
 Bundle 'bitc/vim-hdevtools'
+
+Bundle 'majutsushi/tagbar'
 
 
 " ========== Syntax ==========
@@ -95,19 +100,25 @@ set smartindent
 set listchars=tab:»-,trail:·,nbsp:·  " pretty tabs, trailing spaces
 set list                             " show these invisible characters by default
 
-set noexpandtab
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+" use editorconfig plugin, but first apply my own settings in case there is no
+" .editorconfig file
+autocmd! editorconfig
+function! IndentationSettings()
+	if (&ft == 'haskell')
+		set expandtab
+		set tabstop=2
+		set softtabstop=2
+		set shiftwidth=2
+	else
+		set noexpandtab
+		set tabstop=4
+		set softtabstop=4
+		set shiftwidth=4
+	endif
 
-function! HaskellSettings()
-	set expandtab
-	set tabstop=2
-	set softtabstop=2
-	set shiftwidth=2
+	EditorConfigReload
 endfunction
-
-au BufEnter,BufRead *.hs call HaskellSettings()
+autocmd BufNewFile,BufReadPost * call IndentationSettings()
 
 
 
@@ -302,6 +313,9 @@ inoremap jj <Esc>
 " visual-mode text pasting without filling the default register
 vnoremap r "_dP
 
+" indent pasted text
+nnoremap p p`[v`]=
+
 " I don't need spaces inserted when joining lines
 "vnoremap J gJ
 
@@ -381,16 +395,22 @@ lnoremap <A-Space> <Space>
 
 " inner-command remaps to correspond to how I map [(" above
 nnoremap di<A-'> di"
+nnoremap di<A-u> di{
+nnoremap di<A-i> di{
 nnoremap di<A-o> di(
 nnoremap di<A-p> di(
 nnoremap di<A-m> di[
 nnoremap di<A-,> di[
 nnoremap ci<A-'> ci"
+nnoremap ci<A-u> ci{
+nnoremap ci<A-i> ci{
 nnoremap ci<A-o> ci(
 nnoremap ci<A-p> ci(
 nnoremap ci<A-m> ci[
 nnoremap ci<A-,> ci[
 vnoremap i<A-'> i"
+vnoremap i<A-u> i{
+vnoremap i<A-i> i{
 vnoremap i<A-o> i(
 vnoremap i<A-p> i(
 vnoremap i<A-m> i[
@@ -596,16 +616,11 @@ let g:syntastic_haskell_checker='ghc-mod'
 let g:syntastic_check_on_open = 1
 
 
-" ---------- taglist (if I start using it again) ----------
+" ---------- tagbar ------------
 
-nnoremap <silent> <A-d> :TlistToggle<CR>
-let Tlist_Show_One_File = 1
-let Tlist_Enable_Fold_Column = 0
-let Tlist_GainFocus_On_ToggleOpen = 1
-let Tlist_Display_Prototype = 1
-
-" actionscript language
-let tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
+nnoremap <silent> <A-d> :TagbarToggle<CR>
+let g:tagbar_autofocus = 1
+let g:tagbar_sort = 0
 
 " Regenerate ctags
 nnoremap <Leader>ct :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR>

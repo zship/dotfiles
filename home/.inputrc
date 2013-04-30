@@ -1,5 +1,5 @@
 #VIM mode for readline-based progams
-set editing-mode vi
+#set editing-mode vi
 
 # don't strip characters to 7 bits when reading
 #set input-meta on

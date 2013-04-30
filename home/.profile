@@ -13,3 +13,4 @@ fi
 PATH=$PATH:$adbpath/platform-tools:$adbpath/tools
 
 CLASSPATH=/usr/java/jdk/lib/rt.jar:/usr/java/jdk/lib/tools.jar:
+export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH
