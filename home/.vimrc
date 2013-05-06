@@ -13,50 +13,35 @@ call vundle#rc()
 
 Bundle 'gmarik/vundle'
 
-Bundle 'rbgrouleff/bclose.vim'
-Bundle 'vim-scripts/bufexplorer.zip'
-
 Bundle 'zship/CamelCaseMotion'
 Bundle 'zship/vim-java-annotation-indent'
 Bundle 'zship/vim-easymotion'
-Bundle 'michaeljsmith/vim-indent-object'
 
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
-"Bundle 'scrooloose/syntastic', '3.0.0'
 
 Bundle 'tpope/vim-abolish'
-"Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-surround'
+Bundle 'tpope/vim-surround'
+"Bundle 'tpope/vim-rsi'
 
-Bundle 'Townk/vim-autoclose'
-"Bundle 'kana/vim-arpeggio'
-"Bundle 'JavaScript-syntax'
+Bundle 'rbgrouleff/bclose.vim'
+Bundle 'vim-scripts/bufexplorer.zip'
+Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'pangloss/vim-javascript'
-"Bundle 'jelera/vim-javascript-syntax'
-"Bundle 'vim-scripts/ShowMarks'
-"Bundle 'ervandew/supertab'
-"Bundle 'godlygeek/tabular'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'groenewege/vim-less'
-"Bundle 'Lokaltog/vim-powerline'
 Bundle 'Lokaltog/powerline'
-"Bundle 'Lokaltog/powerline', 'd81d6f163f5d5d24136920a1cc2f69803b78b1c7'
-"Bundle 'lukaszb/vim-web-indent'
 Bundle 'jnurmine/Zenburn'
-"Bundle 'closetag.vim'
 Bundle 'Raimondi/delimitMate'
 Bundle 'editorconfig/editorconfig-vim'
-"Bundle 'Rip-Rip/clang_complete'
-"Bundle 'goldfeld/vim-seek'
-
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'ujihisa/neco-ghc'
 Bundle 'bitc/vim-hdevtools'
-
 Bundle 'majutsushi/tagbar'
+
 
 
 " ========== Syntax ==========
@@ -101,7 +86,7 @@ set listchars=tab:»-,trail:·,nbsp:·  " pretty tabs, trailing spaces
 set list                             " show these invisible characters by default
 
 " use editorconfig plugin, but first apply my own settings in case there is no
-" .editorconfig file
+" .editorconfig file. called from an autocommand (below)
 function! IndentationSettings()
 	if (&ft == 'haskell')
 		set expandtab
@@ -117,7 +102,6 @@ function! IndentationSettings()
 
 	EditorConfigReload
 endfunction
-autocmd BufNewFile,BufReadPost * call IndentationSettings()
 
 
 
@@ -215,49 +199,29 @@ set virtualedit=all   " cursor can be over areas with no characters
 
 " ========== Autocommands ==========
 
-if !exists("autocommands_loaded")
-	let autocommands_loaded = 1
+augroup personal-autocommands
+	autocmd! *
 
 	" Automatically cd into the directory that the file is in
 	autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
 
+	" Indentation settings from .editorconfig or explicitly-defined
+	autocmd BufNewFile,BufReadPost * call IndentationSettings()
+
 	" less css
 	autocmd BufRead,BufNewFile *.less set ft=less
 
-	" CSS: I like to indent things differently than VIM assumes
-	"au BufEnter *.css set nocindent
-	"au BufLeave *.css set cindent
-
 	" more php extensions
-	au BufNewFile,BufRead *.module set filetype=php
-	au BufNewFile,BufRead *.inc set filetype=php
-	au BufNewFile,BufRead *.install set filetype=php
+	autocmd BufNewFile,BufRead *.module set filetype=php
+	autocmd BufNewFile,BufRead *.inc set filetype=php
+	autocmd BufNewFile,BufRead *.install set filetype=php
 
 	" This is annoying as hell. There are a handful of options which are being
 	" overridden *somewhere*. :verbose set ... doesn't give anything.
-	au BufNewFile,BufRead * set textwidth=0
-	au BufNewFile,BufRead * set list
-
-	" haskellmode
-	"au BufEnter *.hs compiler ghc
-
-	" validate html on save (syntastic is used, I think)
-	"au BufWritePost *.html Validate
-	
-	au BufEnter,BufRead *.hs setlocal omnifunc=necoghc#omnifunc
-endif
-
-
-
-" ========== Project-specific settings ==========
-
-if !exists("project_settings_loaded")
-	let project_settings_loaded = 1
-
-	"autocmd BufNewFile,BufRead */Projects/amd-utils/*.js setlocal expandtab tabstop=4 shiftwidth=4
-endif
-
-
+	autocmd BufNewFile,BufRead * set textwidth=0
+	autocmd BufNewFile,BufRead * set list
+	autocmd BufEnter,BufRead *.hs setlocal omnifunc=necoghc#omnifunc
+augroup END
 
 
 
@@ -272,7 +236,7 @@ if has("gui_macvim")
 endif
 
 
-" Windows
+" Window movement/editing
 nnoremap <Leader>wj <C-w>j
 nnoremap <Leader>wk <C-w>k
 nnoremap <Leader>wl <C-w>l
@@ -299,21 +263,22 @@ nnoremap <expr> <CR> (&l:buftype == '') ? "o\<Esc>" : "\<CR>"
 
 " escape's too far away; let's use jj
 inoremap jj <Esc>
+inoremap kj <Esc>
 
 " clipboard paste/copy
-"if has("gui_macvim")
-	"inoremap <D-v> <Esc>"+gpa
-	"vnoremap <D-c> "+y
-"else
-	inoremap <C-v> <Esc>"+gpi
-	vnoremap <C-c> "+y
-"endif
+inoremap <C-v> <Esc>"+gp`[v`]=`]a
+vnoremap <C-c> "+y
 
 " visual-mode text pasting without filling the default register
 vnoremap r "_dP
 
 " indent pasted text
-nnoremap p p`[v`]=
+" = crashes Vim (!) in the below command:
+" nnoremap p p`[v`]=
+" but not if the cursor is moved to beginning, v, then end, then =
+" but $ changes the `] register, so assign the result to the z register and recall it
+" lordy.
+nnoremap p p`[0v`]mz$=`z
 
 " I don't need spaces inserted when joining lines
 "vnoremap J gJ
@@ -324,42 +289,22 @@ nnoremap : ;
 vnoremap ; :<C-^>
 
 " Easier movement commands
-"if has("gui_macvim")
-	"inoremap <expr> <D-j> pumvisible() ? "\<C-n>" : "\<Down>"
-	"inoremap <expr> <D-k> pumvisible() ? "\<C-p>" : "\<Up>"
-	"inoremap <D-h> <Left>
-	"inoremap <D-l> <Right>
-	"cnoremap <D-j> <Down>
-	"cnoremap <D-k> <Up>
-	"cnoremap <D-h> <Left>
-	"cnoremap <D-l> <Right>
-	"nnoremap <D-j> 20jzz
-	"nnoremap <D-k> 20kzz
-	"nnoremap <D-h> 30h
-	"nnoremap <D-l> 30l
-	"vnoremap <D-j> 20j
-	"vnoremap <D-k> 20k
-	"vnoremap <D-h> 30h
-	"vnoremap <D-l> 30l
-"else
-	inoremap <expr> <c-j> pumvisible() ? "\<C-n>" : "\<Down>"
-	inoremap <expr> <c-k> pumvisible() ? "\<C-p>" : "\<Up>"
-	inoremap <c-h> <Left>
-	inoremap <c-l> <Right>
-	cnoremap <c-j> <Down>
-	cnoremap <c-k> <Up>
-	cnoremap <c-h> <Left>
-	cnoremap <c-l> <Right>
-	nnoremap <c-j> 20jzz
-	nnoremap <c-k> 20kzz
-	nnoremap <c-h> 30h
-	nnoremap <c-l> 30l
-	vnoremap <c-j> 20j
-	vnoremap <c-k> 20k
-	vnoremap <c-h> 30h
-	vnoremap <c-l> 30l
-"endif
-
+inoremap <expr> <c-j> pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <expr> <c-k> pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <c-h> <Left>
+inoremap <c-l> <Right>
+cnoremap <c-j> <Down>
+cnoremap <c-k> <Up>
+cnoremap <c-h> <Left>
+cnoremap <c-l> <Right>
+nnoremap <c-j> 20jzz
+nnoremap <c-k> 20kzz
+nnoremap <c-h> 30h
+nnoremap <c-l> 30l
+vnoremap <c-j> 20j
+vnoremap <c-k> 20k
+vnoremap <c-h> 30h
+vnoremap <c-l> 30l
 
 " Pinky stretchers. Use lmap to affect all of: insert, command, replace, search
 lnoremap <A-a> `
@@ -390,7 +335,6 @@ lnoremap <A-.> ->
 lnoremap <A-/> =>
 " Prevent entering non-breaking space instead of space. Only works on mac.
 lnoremap <A-Space> <Space>
-
 
 " inner-command remaps to correspond to how I map [(" above
 nnoremap di<A-'> di"
@@ -426,60 +370,30 @@ vnoremap <A-.> >
 nnoremap <A-.> >>
 
 " Fake keypad
-"if has("gui_macvim")
-	"lnoremap <C-u> 7
-	"lnoremap <C-i> 8
-	"lnoremap <C-o> 9
-	"lnoremap <C-j> 4
-	"lnoremap <C-k> 5
-	"lnoremap <C-l> 6
-	"lnoremap <C-m> 1
-	"lnoremap <C-,> 2
-	"lnoremap <C-.> 3
-	"lnoremap <C-Space> 0
-	"lnoremap <C-:> +
-	"lnoremap <C-p> -
+" keypad with AltGr (custom ~/.xmodmap file)
+lnoremap ナ 7
+lnoremap ニ 8
+lnoremap ラ 9
+lnoremap マ 4
+lnoremap ノ 5
+lnoremap リ 6
+lnoremap モ 1
+lnoremap ネ 2
+lnoremap ル 3
+lnoremap ホ 0
+lnoremap レ +
+lnoremap セ -
 
-	"nnoremap <C-u> :7<C-^>
-	"nnoremap <C-i> :8<C-^>
-	"nnoremap <C-o> :9<C-^>
-	"nnoremap <C-j> :4<C-^>
-	"nnoremap <C-k> :5<C-^>
-	"nnoremap <C-l> :6<C-^>
-	"nnoremap <C-m> :1<C-^>
-	"nnoremap <C-,> :2<C-^>
-	"nnoremap <C-.> :3<C-^>
-	"nnoremap <C-Space> :0<C-^>
-"else
-	" keypad with AltGr (custom ~/.xmodmap file)
-	lnoremap ナ 7
-	lnoremap ニ 8
-	lnoremap ラ 9
-	lnoremap マ 4
-	lnoremap ノ 5
-	lnoremap リ 6
-	lnoremap モ 1
-	lnoremap ネ 2
-	lnoremap ル 3
-	lnoremap ホ 0
-	lnoremap レ +
-	lnoremap セ -
-
-	nnoremap ナ :7<C-^>
-	nnoremap ニ :8<C-^>
-	nnoremap ラ :9<C-^>
-	nnoremap マ :4<C-^>
-	nnoremap ノ :5<C-^>
-	nnoremap リ :6<C-^>
-	nnoremap モ :1<C-^>
-	nnoremap ネ :2<C-^>
-	nnoremap ル :3<C-^>
-	nnoremap ホ :0<C-^>
-"endif
-
-" I use a file with my favorite macros.  This mapping makes using that simpler
-" yank the current line to register c, then switch to the previous window and apply
-nnoremap <Leader>mm "cyy<c-w>w@c
+nnoremap ナ :7<C-^>
+nnoremap ニ :8<C-^>
+nnoremap ラ :9<C-^>
+nnoremap マ :4<C-^>
+nnoremap ノ :5<C-^>
+nnoremap リ :6<C-^>
+nnoremap モ :1<C-^>
+nnoremap ネ :2<C-^>
+nnoremap ル :3<C-^>
+nnoremap ホ :0<C-^>
 
 " easier filetype switching (for NERD Commenter, mostly)
 nnoremap <Leader>th :set filetype=html<CR>
@@ -497,7 +411,6 @@ nnoremap <Leader>sv :source ~/.vimrc<CR>
 
 
 
-
 " ========== Plugin Settings ==========
 
 
@@ -507,12 +420,6 @@ let g:EasyMotion_mapping_w = '<A-l>'
 let g:EasyMotion_mapping_b = '<A-h>'
 let g:EasyMotion_mapping_j = '<A-j>'
 let g:EasyMotion_mapping_k = '<A-k>'
-
-
-" ---------- arpeggio ----------
-
-"call arpeggio#load()
-"Arpeggio inoremap jk <Esc>
 
 
 " ---------- nerdtree ----------
@@ -561,7 +468,6 @@ let g:clang_library_path = "/usr/local/lib"
 
 " Pulled/modified from supertab
 function! ShouldComplete()
-	" Determines if completion should be kicked off at the current location.
 	let line = getline('.')
 	let cnum = col('.')
 
@@ -576,13 +482,13 @@ function! ShouldComplete()
 	return 1
 endfunction
 
-inoremap <expr> <Tab> pumvisible() ? "\<C-x>\<C-o>\<C-p>" : ShouldComplete() ? "\<C-x>\<C-o>\<C-p>" : "\<Tab>"
-"let g:ycm_key_invoke_completion = '<Tab>'
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : ShouldComplete() ? "\<C-x>\<C-o>\<C-p>" : "\<Tab>"
 let g:ycm_key_list_select_completion = []
 let g:ycm_key_list_previous_completion = []
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_add_preview_to_completeopt = 1
-let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+"let g:ycm_autoclose_preview_window_after_completion = 1
 
 
 " ---------- neco-ghc -----------
@@ -606,12 +512,12 @@ let g:SuperTabLongestHighlight = 1
 
 let g:syntastic_mode_map = {
 	\'mode': 'active',
-	\'active_filetypes': ['javascript', 'sh'],
+	\'active_filetypes': [],
 	\'passive_filetypes': ['java']
 \}
 
-let g:syntastic_javascript_checker='jshint'
-let g:syntastic_haskell_checker='ghc-mod'
+let g:syntastic_javascript_checkers=['jshint']
+let g:syntastic_haskell_checkers=['ghc-mod']
 let g:syntastic_check_on_open = 1
 
 
@@ -621,18 +527,10 @@ nnoremap <silent> <A-d> :TagbarToggle<CR>
 let g:tagbar_autofocus = 1
 let g:tagbar_sort = 0
 
-" Regenerate ctags
-nnoremap <Leader>ct :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR>
-
-" Tags action
-"set tags=tags;/
-"set tags+=~/.vim/tags/qt4
-
 
 " ---------- vim-markdown ----------
 
-" highlight javascript in code blocks (also fixes highlighting after code
-" blocks)
+" highlight javascript in code blocks
 let g:markdown_fenced_languages = ['js=javascript']
 
 
@@ -645,12 +543,8 @@ let g:Powerline_stl_path_style = 'filename'
 
 " ---------- eclim ----------
 
-"let g:EclimHome = '/usr/local/eclipse-helios/plugins/org.eclim_1.6.1'
 let g:EclimHome = '/home/zach/.eclipse/org.eclipse.platform_3.6.1_793567567/plugins/org.eclim_1.6.3'
-"let g:EclimHome = '/home/zach/.eclipse/org.eclipse.platform_3.7.0_155965261/plugins/org.eclim_1.7.6'
-"let g:EclimEclipseHome = '/usr/local/eclipse-helios'
 let g:EclimEclipseHome = '/home/zach/.eclipse/org.eclipse.platform_3.6.1_793567567'
-"let g:EclimEclipseHome = '/home/zach/.eclipse/org.eclipse.platform_3.7.0_155965261'
 let g:EclimHtmlValidate = 0
 let g:EclimXmlValidate = 0
 let g:EclimJavaSearchMapping = 0
@@ -672,7 +566,6 @@ nnoremap <Leader>ar :Ant reload<CR><CR>
 
 " Eclim shortcuts
 nnoremap <Leader>pr :ProjectRefresh<CR>
-
 
 
 
