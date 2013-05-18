@@ -52,7 +52,8 @@ esac
 # ------------------------------------------
 
 eval "$(grunt --completion=bash )"
-source ~/.git-completion.bash
+source "$HOME/.git-completion.bash"
+source "$HOME/.scm_breeze/scm_breeze.sh"
 
 
 # ------------------------------------------
