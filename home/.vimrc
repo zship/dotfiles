@@ -41,6 +41,7 @@ Bundle 'Valloric/YouCompleteMe'
 Bundle 'ujihisa/neco-ghc'
 Bundle 'bitc/vim-hdevtools'
 Bundle 'majutsushi/tagbar'
+Bundle 'sickill/vim-pasta'
 
 
 
@@ -263,10 +264,10 @@ nnoremap <expr> <CR> (&l:buftype == '') ? "o\<Esc>" : "\<CR>"
 
 " escape's too far away; let's use jj
 inoremap jj <Esc>
-inoremap kj <Esc>
 
 " clipboard paste/copy
-inoremap <C-v> <Esc>"+gp`[v`]=`]a
+"inoremap <C-v> <Esc>"+gp`[v`]=`]a
+inoremap <C-v> <Esc>"+gpa
 vnoremap <C-c> "+y
 
 " visual-mode text pasting without filling the default register
@@ -278,7 +279,7 @@ vnoremap r "_dP
 " but not if the cursor is moved to beginning, v, then end, then =
 " but $ changes the `] register, so assign the result to the z register and recall it
 " lordy.
-nnoremap p p`[0v`]mz$=`z
+"nnoremap p p`[0v`]mz$=`z
 
 " I don't need spaces inserted when joining lines
 "vnoremap J gJ
@@ -513,7 +514,7 @@ let g:SuperTabLongestHighlight = 1
 let g:syntastic_mode_map = {
 	\'mode': 'active',
 	\'active_filetypes': [],
-	\'passive_filetypes': ['java']
+	\'passive_filetypes': ['java', 'html']
 \}
 
 let g:syntastic_javascript_checkers=['jshint']
@@ -539,6 +540,11 @@ let g:markdown_fenced_languages = ['js=javascript']
 set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
 let g:Powerline_symbols = 'fancy'
 let g:Powerline_stl_path_style = 'filename'
+
+
+" ---------- vim-pasta ----------
+
+let g:pasta_disabled_filetypes = ['nerdtree']
 
 
 " ---------- eclim ----------
