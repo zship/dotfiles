@@ -18,6 +18,11 @@ fi
 
 export EDITOR='vim'
 
+# iTerm and Terminal do not seem to play nice with vanilla vim
+if [ $(which mvim) ]; then
+	export EDITOR='mvim -f'
+fi
+
 # append to the history file, don't overwrite it
 shopt -s histappend
 

@@ -42,6 +42,7 @@ Bundle 'ujihisa/neco-ghc'
 Bundle 'bitc/vim-hdevtools'
 Bundle 'majutsushi/tagbar'
 Bundle 'sickill/vim-pasta'
+Bundle 'kien/ctrlp.vim'
 
 
 
