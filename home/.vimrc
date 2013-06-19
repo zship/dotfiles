@@ -43,6 +43,7 @@ Bundle 'bitc/vim-hdevtools'
 Bundle 'majutsushi/tagbar'
 Bundle 'sickill/vim-pasta'
 Bundle 'kien/ctrlp.vim'
+Bundle 'marijnh/tern_for_vim'
 
 
 
@@ -490,6 +491,17 @@ let g:ycm_key_list_previous_completion = []
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_add_preview_to_completeopt = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_semantic_triggers =  {
+  \   'c' : ['->', '.'],
+  \   'objc' : ['->', '.'],
+  \   'ocaml' : ['.', '#'],
+  \   'cpp,objcpp' : ['->', '.', '::'],
+  \   'perl' : ['->'],
+  \   'php' : ['->', '::'],
+  \   'cs,java,d,vim,ruby,python,perl6,scala,vb,elixir,go' : ['.'],
+  \   'lua' : ['.', ':'],
+  \   'erlang' : [':'],
+  \ }
 "let g:ycm_autoclose_preview_window_after_completion = 1
 
 
