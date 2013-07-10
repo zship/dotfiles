@@ -3,7 +3,8 @@ PATH=$PATH:/usr/local/ant/bin/
 PATH=$PATH:/sbin/
 PATH=$PATH:$HOME/.cabal/bin/
 PATH=$PATH:/usr/local/share/npm/bin
-PATH=$PATH:/Users/zachshipley/Downloads/libimobiledevice-macosx
+PATH=$PATH:$HOME/Downloads/libimobiledevice-macosx
+PATH=$PATH:$HOME/Downloads/git-tf-2.0.2.20130214
 
 adbpath=''
 if [ -e $HOME/android-sdk-linux ]; then
