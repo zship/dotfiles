@@ -1,6 +1,5 @@
 [user]
 	name = Zach Shipley
-	;email = zach@openskysoftware.com
 	email = zach@zachshipley.com
 [alias]
 	lol = log --graph --decorate --pretty=oneline --abbrev-commit
@@ -9,7 +8,6 @@
 	up = !"git stash; git svn rebase; git stash pop"
 	; pull in submodules (does not update them; only ensures they're loaded)
 	subup = !"git pull; git submodule init; git submodule update; git submodule status"
-	standup = !"$HOME/git-standup.sh"
 [color]
 	branch = auto
 	diff = auto

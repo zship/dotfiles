@@ -1,0 +1,33 @@
+#!/bin/bash -e
+
+# http://stackoverflow.com/a/12185115
+#
+# If you like terse commands
+# <pre> git rev-list $(git rev-list --first-parent ^branch_name master | tail -n1)^^! </pre>
+# 
+# Here's an explanation.
+# The following command gives you the list of all commits in master that occurred after branch_name was created
+# <pre> git rev-list --first-parent ^branch_name master </pre>
+# Since you only care about the earliest of those commits you want the last line of the output:
+# <pre>git rev-list ^branch_name --first-parent master | tail -n1</pre>
+# 
+# The parent of the earliest commit that's not an ancestor branch_name, is by definition in branch_name, and is in master since it's an ancestor of something in master. So you've got the earliest commit that's in both branches.
+# 
+# The command
+# <pre> git rev-list commit^^! </pre>
+# is just a way to show the parent commit reference, you could use
+# <pre> git log -1 commit^ or whatever.</pre>
+# 
+# PS: I disagree with the argument that ancestor order is irrelevant. It depends on what you want. For example in this case
+# <pre>
+# _C1___C2_______ master
+#   \    \_XXXXX_ branch A (the Xs denote arbitrary cross-overs between master and A)
+#    \_____/ branch B
+# </pre>
+# It makes perfect sense to output C2 as the "branching" commit. This is when the developer branched out from master. When he branched, branch B wasn't even merged in his branch! This is what the solution in this post gives.
+# 
+# If what you want is the last commit C such that all paths from origin to the last commit on branch A go through C, then you want to ignore ancestry order. That's purely topological and gives you an idea of since when you have two versions of the code going at the same time. That's when you'd go with merge-base based approaches, and it will return C1 in my example.
+
+
+#diff --old-line-format='' --new-line-format='' <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1
+git rev-parse $(git rev-list --first-parent "^${1:-HEAD}" ${2:-master} | tail -n1)^

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # git-standup: find out what you did yesterday (or last friday).
 #
 # Setup:
