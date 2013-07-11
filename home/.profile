@@ -1,4 +1,5 @@
 PATH=$PATH:$HOME/bin/
+PATH=$PATH:$HOME/git-scripts/
 PATH=$PATH:/usr/local/ant/bin/
 PATH=$PATH:/sbin/
 PATH=$PATH:$HOME/.cabal/bin/
