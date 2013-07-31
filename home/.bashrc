@@ -1,5 +1,3 @@
-# .bashrc
-
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
@@ -22,6 +20,8 @@ export EDITOR='vim'
 if [ $(which mvim) ]; then
 	export EDITOR='mvim -f'
 fi
+
+export GREP_COLOR="32"
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -109,8 +109,6 @@ if [ -x /usr/bin/atop ]; then
 fi
 
 alias ll='ls -alFh'
-alias la='ls -A'
-alias l='ls -CF'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -118,6 +116,8 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 # resume wget by default
 alias wget='wget -c'
+
+alias grep='grep --color'
 
 
 # package managers
@@ -152,8 +152,8 @@ elif [ -x /usr/bin/apt-get ]; then
 	pms() {
 		echo 'Partial Matches'
 		echo '-------------------------'
-		echo ''
 		sudo apt-cache search "$1"
+		echo ''
 		echo 'Exact Matches (with version info)'
 		echo '-------------------------'
 		sudo apt-cache show "$1" | grep -e '^Package:' -e '^Section:' -e '^Version:' -e '^$'
@@ -186,12 +186,12 @@ elif [ -x /usr/local/bin/brew ]; then
 	pms() {
 		echo 'Partial Matches'
 		echo '-------------------------'
-		echo ''
 		brew search "$1"
+		echo ''
 		echo 'Description Matches'
 		echo '-------------------------'
-		echo ''
 		brew desc -s "$1"
+		echo ''
 		echo 'Exact Matches (with version info)'
 		echo '-------------------------'
 		brew info "$1"
@@ -203,7 +203,7 @@ elif [ -x /usr/local/bin/brew ]; then
 		echo ''
 		echo "Installed Files:"
 		echo '---------------'
-		brew list --unbrewed "$1"
+		brew list "$1"
 	}
 	alias pmi='brew install'
 	alias pmu='brew update && brew upgrade'
@@ -244,14 +244,11 @@ extract() {
 
 #netinfo - shows network information for your system
 netinfo() {
-	echo "--------------- Network Information ---------------"
-	/sbin/ifconfig | awk /'inet addr/ {print $2}'
-	/sbin/ifconfig | awk /'Bcast/ {print $3}'
-	/sbin/ifconfig | awk /'inet addr/ {print $4}'
-	/sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
-	myip=`lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g' `
-	echo "${myip}"
-	echo "---------------------------------------------------"
+	ifconfig | awk /'inet addr/ {print $2}'
+	ifconfig | awk /'Bcast/ {print $3}'
+	ifconfig | awk /'inet addr/ {print $4}'
+	ifconfig | awk /'HWaddr/ {print $4,$5}'
+	curl http://checkip.dyndns.org:8245/ -s | perl -pe 's/^.*Current IP Address: ([\d\.]*?)<.*/\1/g'
 }
 
 
@@ -263,3 +260,21 @@ dirstat() {
 	egrep '^ *[0-9.]*G' /tmp/list
 	rm -rf /tmp/list
 }
+
+
+# alias core git commands by wrapping git
+git() {
+	case "$1" in
+		pull)
+			git xpull "${@:2}"
+			;;
+		push)
+			git xpush "${@:2}"
+			;;
+		*)
+			command git "$@"
+			;;
+	esac
+}
+
+borrow_completion git __git_wrap__git_main git

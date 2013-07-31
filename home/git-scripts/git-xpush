@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+if [ $(git config git-tf.server.serverpath) ]; then
+	echo "> git tf checkin --deep "$@""
+	git tf checkin --deep "$@"
+elif [ $(git config svn-remote.svn.url) ]; then
+	echo "> git svn dcommit "$@""
+	git svn dcommit "$@"
+else
+	git push "$@"
+fi

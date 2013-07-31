@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+if [ $(git config git-tf.server.serverpath) ]; then
+	echo "> git tf pull --deep --rebase "$@""
+	git tf pull --deep --rebase "$@"
+elif [ $(git config svn-remote.svn.url) ]; then
+	echo "> git svn rebase "$@""
+	git svn rebase "$@"
+else
+	git pull "$@"
+fi
