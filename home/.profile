@@ -36,10 +36,20 @@ add_paths_from_file() {
 }
 
 add_default_paths() {
-	add_paths_from_file "/etc/paths"
-	for file in /etc/paths.d/*; do
-		add_paths_from_file "$file"
-	done
+	if [ -f "/etc/environment" ]; then
+		# Linux
+		prev_path="$PATH"
+		source /etc/environment
+		if [ -n $prev_path ]; then
+			PATH="$prev_path:$PATH"
+		fi
+	elif [ -f "/etc/paths" ]; then
+		# OS X
+		add_paths_from_file "/etc/paths"
+		for file in /etc/paths.d/*; do
+			add_paths_from_file "$file"
+		done
+	fi
 
 	# `manpath` only uses man's heuristics if MANPATH is empty
 	prev_manpath="$MANPATH"
