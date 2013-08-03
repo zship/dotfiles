@@ -67,7 +67,7 @@ source "$HOME/.scm_breeze/scm_breeze.sh"
 # ------------------------------------------
 
 # borrow bash complete functions for my own aliases
-# to see existing complete function names: `compgen -F <tab>`
+# to see existing complete function names: `complete -p <command>`
 # http://ubuntuforums.org/showthread.php?t=733397
 borrow_completion() {
 	local borrower_function_name="$1"
@@ -259,6 +259,23 @@ dirstat() {
 	egrep '^ *[0-9.]*M' /tmp/list
 	egrep '^ *[0-9.]*G' /tmp/list
 	rm -rf /tmp/list
+}
+
+
+findup() {
+	path="$PWD"
+	while [ -n "$path" ]; do
+		find $path -maxdepth 1 -name "$1"
+		path="${path%/*}"
+	done
+}
+
+
+make() {
+	makefile="$(findup Makefile)"
+	pushd "$(dirname $makefile)"
+	command make "$@"
+	popd
 }
 
 
