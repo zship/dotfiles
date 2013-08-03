@@ -39,7 +39,7 @@ add_default_paths() {
 	if [ -f "/etc/environment" ]; then
 		# Linux
 		prev_path="$PATH"
-		source /etc/environment
+		. /etc/environment
 		if [ -n $prev_path ]; then
 			PATH="$prev_path:$PATH"
 		fi
