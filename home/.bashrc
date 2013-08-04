@@ -273,9 +273,9 @@ findup() {
 
 make() {
 	makefile="$(findup Makefile)"
-	pushd "$(dirname $makefile)"
+	pushd "$(dirname $makefile)" 1>/dev/null
 	command make "$@"
-	popd
+	popd 1>/dev/null
 }
 
 

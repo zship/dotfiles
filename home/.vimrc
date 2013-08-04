@@ -150,32 +150,13 @@ if &term =~ '^xterm'
 	au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
 endif
 
-"let g:zenburn_old_Visual=1
 set background=light
 let g:solarized_visibility="low"
 colorscheme solarized
-
-" Zenburn customizations
-" lighter line number bg
-"hi LineNr guibg=#323232
-"hi SignColumn guibg=#323232
-
-"" subtle vertical splits
-"hi VertSplit guifg=#323232 guibg=#323232
-
-"" for signs to match signcolumn; errors stand out more anyhow
-"hi Error guibg=#323232
-"hi Todo guibg=#323232
-"hi SignColumn guibg=#323232
-
-"" un-bold current line number
-"hi CursorLineNr gui=none term=none
-
-"" old directory
-"hi Directory ctermfg=188 guifg=#dcdccc
-
-"" old (very subtle) listchar
-"hi SpecialKey ctermfg=240 guibg=NONE guifg=#5c5c5c
+hi SignColumn guibg=#eee8d5
+hi Error guibg=#eee8d5
+hi Todo guibg=#eee8d5
+hi SignColumn guibg=#eee8d5
 
 
 " Bare-bones gui options (why clutter it up?)
