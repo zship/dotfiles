@@ -263,7 +263,7 @@ inoremap <C-v> <Esc>"+gpa
 vnoremap <C-c> "+y
 
 " visual-mode text pasting without filling the default register
-vnoremap p "_dP
+"vnoremap p "_dP
 
 " indent pasted text
 " = crashes Vim (!) in the below command:
@@ -271,7 +271,7 @@ vnoremap p "_dP
 " but not if the cursor is moved to beginning, v, then end, then =
 " but $ changes the `] register, so assign the result to the z register and recall it
 " lordy.
-"nnoremap p p`[0v`]mz$=`z
+" nnoremap p p`[0v`]mz$=`z
 
 " I don't need spaces inserted when joining lines
 "vnoremap J gJ
