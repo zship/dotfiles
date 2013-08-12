@@ -30,6 +30,8 @@ Bundle 'tpope/vim-surround'
 Bundle 'rbgrouleff/bclose.vim'
 Bundle 'vim-scripts/bufexplorer.zip'
 Bundle 'michaeljsmith/vim-indent-object'
+Bundle 'vim-scripts/argtextobj.vim'
+Bundle 'jakobwesthoff/argumentrewrap'
 Bundle 'pangloss/vim-javascript'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'groenewege/vim-less'
@@ -344,6 +346,13 @@ nnoremap ci<A-o> ci(
 nnoremap ci<A-p> ci(
 nnoremap ci<A-m> ci[
 nnoremap ci<A-,> ci[
+vnoremap a<A-'> a"
+vnoremap a<A-u> a{
+vnoremap a<A-i> a{
+vnoremap a<A-o> a(
+vnoremap a<A-p> a(
+vnoremap a<A-m> a[
+vnoremap a<A-,> a[
 vnoremap i<A-'> i"
 vnoremap i<A-u> i{
 vnoremap i<A-i> i{
@@ -387,6 +396,13 @@ nnoremap モ :1<C-^>
 nnoremap ネ :2<C-^>
 nnoremap ル :3<C-^>
 nnoremap ホ :0<C-^>
+
+
+" split/join arguments
+nnoremap <Leader>sa :call argumentrewrap#RewrapArguments()<CR>
+nnoremap <Leader>ja vi(kV:s/,*$//g<CR>gvk:normal $a,<CR>va(J%<Right>x
+
+nnoremap <Leader>co :copen<CR>
 
 " easier filetype switching (for NERD Commenter, mostly)
 nnoremap <Leader>th :set filetype=html<CR>
