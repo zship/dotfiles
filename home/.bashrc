@@ -83,6 +83,7 @@ if [ -x /usr/bin/atop ]; then
 fi
 
 alias homesick="$HOME/.homeshick"
+alias man='man --no-hyphenation --no-justification'
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
