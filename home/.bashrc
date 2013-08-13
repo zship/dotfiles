@@ -8,6 +8,10 @@ if [ -f /etc/bash_completion ]; then
 	. /etc/bash_completion
 fi
 
+if [[ $(which brew) && -f $(brew --prefix)/share/bash-completion/bash_completion ]]; then
+	. $(brew --prefix)/share/bash-completion/bash_completion
+fi
+
 
 # ------------------------------------------
 # General Settings
@@ -45,14 +49,18 @@ esac
 # Custom Tab Completion
 # ------------------------------------------
 
-eval "$(grunt --completion=bash )"
-source "$HOME/.git-completion.bash"
-source "$HOME/.scm_breeze/scm_breeze.sh"
+. <(grunt --completion=bash)
+. <(npm completion)
+. "$HOME/.git-completion.bash"
+. "$HOME/.scm_breeze/scm_breeze.sh"
 
 
 # ------------------------------------------
 # Aliases & Functions
 # ------------------------------------------
+
+
+# reference: apt-get suggestions are from "command_not_found_handle"
 
 # borrow bash complete functions for my own aliases
 # to see existing complete function names: `complete -p <command>`
@@ -83,7 +91,6 @@ if [ -x /usr/bin/atop ]; then
 fi
 
 alias homesick="$HOME/.homeshick"
-alias man='man --no-hyphenation --no-justification'
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
@@ -93,7 +100,7 @@ alias wget='wget -c' # resume wget by default
 
 
 # package managers
-if [ -x /usr/bin/yum ]; then
+if [ $(which yum) ]; then
 	pms() {
 		sudo yum search all --showduplicates --debuglevel=0 --errorlevel=0 "$1"
 		echo ''
@@ -120,7 +127,7 @@ if [ -x /usr/bin/yum ]; then
 	alias pmi='sudo yum install'
 	alias pmu='sudo yum update'
 	alias pmr='sudo yum remove'
-elif [ -x /usr/bin/apt-get ]; then
+elif [ $(which apt-get) ]; then
 	pms() {
 		echo 'Partial Matches'
 		echo '-------------------------'
@@ -154,7 +161,7 @@ elif [ -x /usr/bin/apt-get ]; then
 
 	alias pmr='sudo apt-get remove'
 	borrow_completion pmr _apt_get apt-get remove
-elif [ -x /usr/local/bin/brew ]; then
+elif [ $(which brew) ]; then
 	pms() {
 		echo 'Partial Matches'
 		echo '-------------------------'
@@ -211,26 +218,6 @@ extract() {
 
 	curpath=$(pwd)
 	echo "$curpath/$(basename $1) => $curpath/$(basename $wrapper_dir)/"
-}
-
-
-#netinfo - shows network information for your system
-netinfo() {
-	ifconfig | awk /'inet addr/ {print $2}'
-	ifconfig | awk /'Bcast/ {print $3}'
-	ifconfig | awk /'inet addr/ {print $4}'
-	ifconfig | awk /'HWaddr/ {print $4,$5}'
-	curl http://checkip.dyndns.org:8245/ -s | perl -pe 's/^.*Current IP Address: ([\d\.]*?)<.*/\1/g'
-}
-
-
-#dirsize - finds directory sizes and lists them for the current directory
-dirstat() {
-	du -shx * .[a-zA-Z0-9_]* 2> /dev/null | \
-	egrep '^ *[0-9.]*[MG]' | sort -n > /tmp/list
-	egrep '^ *[0-9.]*M' /tmp/list
-	egrep '^ *[0-9.]*G' /tmp/list
-	rm -rf /tmp/list
 }
 
 
