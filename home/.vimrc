@@ -5,49 +5,49 @@ set nocompatible
 
 
 
-" ========== Vundle Init ==========
+" ========== NeoBundle Init ==========
 
-filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+if has('vim_starting')
+	set runtimepath+=~/.vim/bundle/neobundle.vim/
+endif
 
-Bundle 'gmarik/vundle'
+call neobundle#rc(expand('~/.vim/bundle/'))
 
-Bundle 'zship/CamelCaseMotion'
-Bundle 'zship/vim-java-annotation-indent'
-Bundle 'zship/vim-easymotion'
+NeoBundleFetch 'Shougo/neobundle.vim'
 
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic'
+NeoBundle 'altercation/vim-colors-solarized'
+NeoBundle 'bitc/vim-hdevtools'
+NeoBundle 'bling/vim-airline'
+NeoBundle 'digitaltoad/vim-jade'
+NeoBundle 'editorconfig/editorconfig-vim'
+NeoBundle 'groenewege/vim-less'
+NeoBundle 'jakobwesthoff/argumentrewrap'
+NeoBundle 'jnurmine/Zenburn'
+NeoBundle 'kien/ctrlp.vim'
+NeoBundle 'majutsushi/tagbar'
+NeoBundle 'marijnh/tern_for_vim'
+NeoBundle 'michaeljsmith/vim-indent-object'
+NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'Raimondi/delimitMate'
+NeoBundle 'rbgrouleff/bclose.vim'
+NeoBundle 'scrooloose/nerdcommenter'
+NeoBundle 'scrooloose/nerdtree'
+NeoBundle 'scrooloose/syntastic'
+NeoBundle 'sjl/gundo.vim'
+NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'tpope/vim-abolish'
+NeoBundle 'tpope/vim-markdown'
+NeoBundle 'tpope/vim-surround'
+NeoBundle 'ujihisa/neco-ghc'
+NeoBundle 'Valloric/YouCompleteMe'
+NeoBundle 'vim-scripts/argtextobj.vim'
+NeoBundle 'vim-scripts/bufexplorer.zip'
+NeoBundle 'zship/CamelCaseMotion'
+NeoBundle 'zship/vim-easymotion'
+NeoBundle 'zship/vim-java-annotation-indent'
+NeoBundle 'zship/vim-pasta'
 
-Bundle 'tpope/vim-abolish'
-Bundle 'tpope/vim-markdown'
-Bundle 'tpope/vim-surround'
-Bundle 'tpope/vim-surround'
-"Bundle 'tpope/vim-rsi'
-
-Bundle 'rbgrouleff/bclose.vim'
-Bundle 'vim-scripts/bufexplorer.zip'
-Bundle 'michaeljsmith/vim-indent-object'
-Bundle 'vim-scripts/argtextobj.vim'
-Bundle 'jakobwesthoff/argumentrewrap'
-Bundle 'pangloss/vim-javascript'
-Bundle 'digitaltoad/vim-jade'
-Bundle 'groenewege/vim-less'
-Bundle 'Lokaltog/powerline'
-Bundle 'Raimondi/delimitMate'
-Bundle 'editorconfig/editorconfig-vim'
-Bundle 'Valloric/YouCompleteMe'
-Bundle 'ujihisa/neco-ghc'
-Bundle 'bitc/vim-hdevtools'
-Bundle 'majutsushi/tagbar'
-Bundle 'sickill/vim-pasta'
-Bundle 'kien/ctrlp.vim'
-Bundle 'marijnh/tern_for_vim'
-
-Bundle 'jnurmine/Zenburn'
-Bundle 'altercation/vim-colors-solarized'
+NeoBundleCheck
 
 
 
@@ -75,7 +75,7 @@ set diffopt=vertical        " diff mode should split vertically
 set nofoldenable            " disable folding
 
 set laststatus=2            " Always show status line for each window
-set noshowmode              " Hide default mode text (powerline handles this)
+set noshowmode              " Hide default mode text (vim-airline handles this)
 set statusline=%F%m%r%h%w\ (%{&ff}){%Y}\ [%l/%L,%v][%p%%]
 
 runtime macros/matchit.vim  " better % matching
@@ -263,20 +263,6 @@ inoremap jj <Esc>
 "inoremap <C-v> <Esc>"+gp`[v`]=`]a
 inoremap <C-v> <Esc>"+gpa
 vnoremap <C-c> "+y
-
-" visual-mode text pasting without filling the default register
-"vnoremap p "_dP
-
-" indent pasted text
-" = crashes Vim (!) in the below command:
-" nnoremap p p`[v`]=
-" but not if the cursor is moved to beginning, v, then end, then =
-" but $ changes the `] register, so assign the result to the z register and recall it
-" lordy.
-" nnoremap p p`[0v`]mz$=`z
-
-" I don't need spaces inserted when joining lines
-"vnoremap J gJ
 
 " swap ; and :  Convenient. Also activate lmaps when entering command mode
 nnoremap ; :<C-^>
@@ -473,6 +459,11 @@ let g:clang_use_library = 1
 let g:clang_library_path = "/usr/local/lib"
 
 
+" ---------- gundo ------------
+
+nnoremap <C-u> :GundoToggle<CR>
+
+
 " ---------- YouCompleteMe -----------
 
 " Pulled/modified from supertab
@@ -516,18 +507,6 @@ let g:ycm_semantic_triggers =  {
 let g:necoghc_enable_detailed_browse = 1
 
 
-" ---------- supertab ----------
-
-" let supertab guess what kind of completion is needed
-let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabLeadingSpaceCompletion = 0
-let g:SuperTabCrMapping = 0
-"let g:SuperTabMappingForward = '<c-space>'
-"let g:SuperTabMappingBackward = '<s-c-space>'
-let g:SuperTabLongestEnhanced = 1
-let g:SuperTabLongestHighlight = 1
-
-
 " ---------- syntastic ----------
 
 let g:syntastic_mode_map = {
@@ -554,11 +533,11 @@ let g:tagbar_sort = 0
 let g:markdown_fenced_languages = ['js=javascript']
 
 
-" ---------- vim-powerline ----------
+" ---------- vim-airline ----------
 
-set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
-let g:Powerline_symbols = 'fancy'
-let g:Powerline_stl_path_style = 'filename'
+let g:airline_powerline_fonts = 1
+let g:airline_detect_whitespace = 0
+let g:airline_theme='solarized'
 
 
 " ---------- vim-pasta ----------
@@ -591,21 +570,3 @@ nnoremap <Leader>ar :Ant reload<CR><CR>
 
 " Eclim shortcuts
 nnoremap <Leader>pr :ProjectRefresh<CR>
-
-
-
-" ========== Piped Shell Commands ==========
-
-" PHP Replace visual selection with html entities, if appropriate
-vnoremap <silent> <Leader>he :!php -R 'echo mb_convert_encoding($argn,"HTML-ENTITIES","UTF-8");'<CR>
-
-" HTML Tidy for visual selections (write errors to /dev/null)
-vnoremap <silent> <Leader>ht :!tidy -q --indent auto --input-encoding utf8 --output-encoding ascii --tidy-mark 0 --wrap 0 --vertical-space 1 --show-body-only 1 2>/dev/null<CR>
-
-
-
-" ========== (Personal Reference) ==========
-
-" find out which plugins are misbehaving
-" vim --cmd 'let g:sourced_files=[] | autocmd SourcePre * if !empty(g:sourced_files) && stridx(&cpo, "$")==-1 | echomsg "cpo does not contain dollar sign after loading ".g:sourced_files[-1] | set cpo+=$ | endif | let g:sourced_files+=[expand("<amatch>")]'
-" vim --cmd 'let g:sourced_files=[] | autocmd SourcePre * if !empty(g:sourced_files) && &tw != 9 | echomsg "potential textwidth overwrite: ".g:sourced_files[-1] | set tw=9 | endif | let g:sourced_files+=[expand("<amatch>")]'
