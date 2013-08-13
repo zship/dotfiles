@@ -51,7 +51,7 @@ esac
 
 . <(grunt --completion=bash)
 . <(npm completion)
-. "$HOME/.git-completion.bash"
+. "$HOME/.bash/.git-completion.bash"
 . "$HOME/.scm_breeze/scm_breeze.sh"
 
 
@@ -190,44 +190,17 @@ elif [ $(which brew) ]; then
 fi
 
 
-# universal archive extraction
-extract() {
-	filename=$1
-	# extract to a directory named "file [minus] extension"
-	filename="./${filename%.*}"
-	wrapper_dir="$filename"
-	count=0
-
-	# directory exists? keep incrementing count and adding it to the end of the name
-    while [ -d "$wrapper_dir" ]; do
-		let "count += 1"
-		wrapper_dir="${filename}.${count}"
-		#echo "$wrapper_dir"
-	done
-
-	7z x "$1" -o"$wrapper_dir" &>/dev/null
-
-	# check wrapper_dir contents for just one folder; move contents up one dir and remove the single dir
-	dirs=$(find "$wrapper_dir" -mindepth 1 -maxdepth 1 -type d | wc -l)
-	files=$(find "$wrapper_dir" -mindepth 1 -maxdepth 1 -type f | wc -l)
-	if [ "$dirs" == '1' ] && [ "$files" == '0' ]; then
-		inner_dir=$(find "$wrapper_dir" -mindepth 1 -maxdepth 1 -type d)
-		find "$inner_dir" -mindepth 1 -maxdepth 1 | xargs mv -iv -t "$wrapper_dir" &>/dev/null
-		rmdir "$inner_dir"
-	fi
-
-	curpath=$(pwd)
-	echo "$curpath/$(basename $1) => $curpath/$(basename $wrapper_dir)/"
+gitt() {
+	echo "test";
 }
 
-
-findup() {
-	path="$PWD"
-	while [ -n "$path" ]; do
-		find $path -maxdepth 1 -name "$1"
-		path="${path%/*}"
-	done
+_gitt_complete() {
+	local cur prev words cword split
+	_init_completion -s ||  return
+	COMPREPLY=( $( compgen -W "zship/amd zship/deferreds" -- "$cur" ) )
 }
+
+complete -F _gitt_complete gitt
 
 
 make() {
