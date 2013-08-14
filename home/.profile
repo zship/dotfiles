@@ -25,4 +25,4 @@ add_path "$HOME/Downloads/libimobiledevice-macosx"
 export DYLD_LIBRARY_PATH=/Users/zachshipley/Downloads/libimobiledevice-macosx/:$DYLD_LIBRARY_PATH
 
 export CLASSPATH=/usr/java/jdk/lib/rt.jar:/usr/java/jdk/lib/tools.jar
-export HOMEBREW_GITHUB_API_TOKEN="$(cat $HOME/.config/brew)"
+export HOMEBREW_GITHUB_API_TOKEN="$(cat $HOME/.config/brew &> /dev/null)"

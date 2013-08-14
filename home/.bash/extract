@@ -1,72 +1,188 @@
 #!/bin/bash
 
 
-set -e
+set -ex
 set -o pipefail
 
 
-if [[ ! -f "$1" ]]; then
+prev=$(find . -maxdepth 1 | sort)
+curr="$prev"
+
+
+_added() {
+	echo "$( comm -13 <(echo "$prev") <(echo "$curr") )"
+}
+
+_cleanup() {
+	# remove any files created by this script (in case of errors)
+	curr=$(find . -maxdepth 1 | sort)
+	local added="$(_added)"
+	if [[ -n $added ]]; then
+		echo "extract generated these files before encountering an error:"
+		echo "$added"
+		echo -n "Delete temporary files? [Y/n] "
+		read REPLY
+		if [[ $REPLY == 'y' || $REPLY == 'Y' ]]; then
+			echo "$added" | xargs rm -Rfv
+		fi
+	fi
+}
+
+_trap() {
+	if [[ $? == 0 ]]; then
+		# Normal exit code
+		return
+	fi
+	_cleanup
+}
+
+trap _trap EXIT
+
+
+_extract() {
+	local file="$1"
+
+	case "$file" in
+		*.tar)
+			tar -xvf "$file"
+			;;
+		*.tar.gz | *.tgz)
+			tar -xzvf "$file"
+			;;
+		*.tar.bz2 | *.tbz | *.tbz2)
+			tar -xjvf "$file"
+			;;
+		*.tar.xz | *.txz)
+			( tar --xz --help &>/dev/null && tar --xz -xvf "$file" ) \
+			|| \
+			( xzcat "$file" | tar -xvf - )
+			;;
+		*.tar.zma | *.tlz)
+			( tar --lzma --help &>/dev/null && tar --lzma -xvf "$file" ) \
+			|| \
+			(lzcat "$file" | tar -xvf - )
+			;;
+		*.gz)
+			gunzip "$file"
+			;;
+		*.bz2)
+			bunzip2 "$file"
+			;;
+		*.xz)
+			unxz "$file"
+			;;
+		*.lzma)
+			unlzma "$file"
+			;;
+		*.Z)
+			uncompress "$file"
+			;;
+		*.zip)
+			unzip "$file"
+			;;
+		*.rar)
+			unrar x -ad "$file"
+			;;
+		*.7z)
+			7za x "$file"
+			;;
+		*.jar)
+			jar -xvf "$file"
+			;;
+		*.exe)
+			cabextract "$file"
+			;;
+		#*.deb)
+			#tmp="$file_tmp_deb"
+			#mkdir "$tmp"
+			#mkdir -p "$tmp/control"
+			#mkdir -p "$tmp/data"
+			#cd "$tmp"; ar vx "../${tmp}" > /dev/null
+			#cd control; tar -xzvf ../control.tar.gz
+			#cd ../data; tar -xzvf ../data.tar.gz
+			#cd ..
+			#;;
+		*)
+			echo "File format not supported." >&2
+			return 1
+			;;
+	esac
+}
+
+_extract_fallback() {
+	echo "Falling back to 7z"
+	7z x "$1"
+}
+
+
+if [[ ! -f $1 ]]; then
 	echo 'File argument is required.'
 	exit 1
 fi
 
+file="$1"
+base=$(dirname "$file")
 
-base=$(basename "$1")
-before=$(find "$base" -maxdepth 1)
+while [[ $1 != "" ]];  do
+	case "$1" in
+		-o | --output-dir)
+			shift
+			output_dir="$1"
+			;;
+		-f | --force)
+			force_output_dir=true
+			;;
+		-v | --verbose)
+			verbose=true
+			exec 3>&1
+			;;
+	esac
+	shift
+done
 
+if [[ -z $output_dir ]]; then
+	output_dir="./${file%.*}"
+fi
 
-filename="$1"
-filename="./${filename%.*}"
-
-
-# extract to a directory named "file [minus] extension"
-extract_to_directory() {
-	wrapper_dir="$filename"
-	count=0
-
-	# directory exists? keep incrementing count and adding it to the end of the name
-	while [ -d "$wrapper_dir" ]; do
-		let "count += 1"
-		wrapper_dir="${filename}.${count}"
-		#echo "$wrapper_dir"
-	done
-
-	7z x "$1" -o"$wrapper_dir" &>/dev/null
-
-	# check wrapper_dir contents for just one folder; move contents up one dir and remove the single dir
-	dirs=$(find "$wrapper_dir" -mindepth 1 -maxdepth 1 -type d | wc -l)
-	files=$(find "$wrapper_dir" -mindepth 1 -maxdepth 1 -type f | wc -l)
-	if [ "$dirs" == '1' ] && [ "$files" == '0' ]; then
-		inner_dir=$(find "$wrapper_dir" -mindepth 1 -maxdepth 1 -type d)
-		find "$inner_dir" -mindepth 1 -maxdepth 1 | xargs mv -iv -t "$wrapper_dir" &>/dev/null
-		rmdir "$inner_dir"
+if [[ -e $output_dir ]]; then
+	if [[ ! $force_output_dir ]]; then
+		echo "$output_dir already exists. Use --force if you're sure."
+		exit 1
 	fi
+	rm -Rf "$output_dir"
+fi
 
-	echo "$(pwd)/$(basename $1) => $(pwd)/$(basename $wrapper_dir)/"
-}
+if [[ -n $verbose ]]; then
+	exec 3>&1
+else
+	exec 3>/dev/null
+fi
 
+prev=$(find . -maxdepth 1 | sort)
 
-case $1 in
-	*.tar.bz2) tar -xjf $1 ;;
-	*.tar.gz) tar -xzf $1 ;;
-	*) extract_to_directory $1 ;;
+if [ ! $(_extract "$file" 1>&3) ]; then
+	_cleanup
+	echo "Falling back to 7z..." 1>&3
+	7z x "$file" 1>&3
+fi
 
-	(*.tar.gz|*.tgz) tar -xzf "$1" ;;
-	(*.tar.bz2|*.tbz|*.tbz2) tar -xjf "$1" ;;
-	(*.tar.xz|*.txz) tar --xz --help &> /dev/null \
-   && tar --xz -xvf "$1" \
-   || xzcat "$1" | tar xvf - ;;
-   (*.tar.zma|*.tlz) tar --lzma --help &> /dev/null \
-   && tar --lzma -xvf "$1" \
-   || lzcat "$1" | tar xvf - ;;
-   (*.tar) tar xvf "$1" ;;
-   (*.gz) gunzip "$1" ;;
-   (*.bz2) bunzip2 "$1" ;;
-   (*.xz) unxz "$1" ;;
-   (*.lzma) unlzma "$1" ;;
-   (*.Z) uncompress "$1" ;;
-   (*.zip) unzip "$1" -d $extract_dir ;;
-   (*.rar) unrar x -ad "$1" ;;
-   (*.7z) 7za x "$1" ;;
-   (*.deb)
-   esac
+curr=$(find . -maxdepth 1 | sort)
+added="$(_added)"
+
+if [[ -z $added ]]; then
+	echo "Extract operation produced no files! Should never happen..."
+	exit 1
+fi
+
+count=$(echo "$added" | wc -l)
+
+if [[ $count -gt 1 ]]; then
+	# operation dumped a bunch of files into the cwd
+	mkdir -p "$output_dir"
+	echo "$added" | xargs mv -n --target-directory="$output_dir"
+elif [[ $count -eq 1  && ! -e $output_dir ]]; then
+	# operation produced one file, but it's not named $output_dir
+	mv "$added" "$output_dir"
+fi
+
+echo "$file -> $output_dir"

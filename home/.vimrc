@@ -37,7 +37,6 @@ NeoBundle 'sjl/gundo.vim'
 NeoBundle 'tpope/vim-abolish'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-markdown'
-NeoBundle 'tpope/vim-rsi'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'ujihisa/neco-ghc'
 NeoBundle 'Valloric/YouCompleteMe'
@@ -48,6 +47,7 @@ NeoBundle 'zship/CamelCaseMotion'
 NeoBundle 'zship/vim-easymotion'
 NeoBundle 'zship/vim-java-annotation-indent'
 NeoBundle 'zship/vim-pasta'
+NeoBundle 'zship/vim-rsi'
 
 NeoBundleCheck
 
