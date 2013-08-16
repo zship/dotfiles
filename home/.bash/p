@@ -26,10 +26,10 @@ usage() {
 }
 
 
-if [ $(which apt-get) ]; then
+command=$1
+shift
 
-	local command=$1
-	shift
+if [ $(which apt-get) ]; then
 
 	case $command in
 		update) sudo apt-get update $@ ;;
@@ -50,9 +50,6 @@ if [ $(which apt-get) ]; then
 
 elif [ $(which brew) ]; then
 
-	local command=$1
-	shift
-
 	case $command in
 		update) brew update ;;
 		outdated) brew outdated $@;;
@@ -71,9 +68,6 @@ elif [ $(which brew) ]; then
 	esac
 
 elif [ $(which yum) ]; then
-
-	local command=$1
-	shift
 
 	case $command in
 		update) yum check-update ;;

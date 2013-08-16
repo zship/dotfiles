@@ -220,6 +220,12 @@ my_git() {
 		push)
 			git xpush "${@:2}"
 			;;
+		stash)
+			git xstash "${@:2}"
+			;;
+		status)
+			git xstatus "${@:2}"
+			;;
 		*)
 			command git "$@"
 			;;

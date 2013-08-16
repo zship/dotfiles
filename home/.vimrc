@@ -439,15 +439,19 @@ let g:EasyMotion_mapping_k = '<A-k>'
 
 " ---------- unite ------------
 
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
+"call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#custom#source('buffer', 'converters', ['converter_file_directory'])
 
-nnoremap <A-f> :Unite -no-split -start-insert file_rec/async:!<CR>
-nnoremap <A-s> :Unite -no-split -quick-match buffer<CR>
-nnoremap <A-d> :Unite -no-split -start-insert directory:/<CR>
+nnoremap <A-f> :Unite -no-split -toggle -auto-preview -start-insert file_rec/async:!<CR>
+nnoremap <A-s> :Unite -no-split -toggle -auto-preview -quick-match buffer<CR>
+nnoremap <A-d> :Unite -no-split -toggle -auto-preview -start-insert directory:/<CR>
 
 autocmd MyAutoCmd FileType unite call s:unite_settings()
 function! s:unite_settings()
 	inoremap <buffer><expr> <Tab> unite#do_action('narrow')
+	imap <buffer> <C-j> <Plug>(unite_select_next_line)
+	imap <buffer> <C-k> <Plug>(unite_select_previous_line)
+	imap <buffer> <C-a> <Plug>(unite_choose_action)
 endfunction
 
 

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+
+assume_unchanged="$(git ls-files -v | grep -E '^h' | perl -pe 's/^h\s(.*)/\1/')"
+
+output=$(script -q /dev/null command git status "$@")
+UTR=$(git config --get-color color.status.untracked 'red')
+RESET=$(git config --get-color '' 'reset')
+
+if [[ -n $assume_unchanged ]]; then
+	echo "$output" | head --lines=-1
+	echo "#"
+	echo "# Assume-unchanged files:"
+	echo '#   (use "git update-index --no-assume-unchanged <file>" to start tracking)'
+	echo "#"
+	for file in "$assume_unchanged"; do
+		echo "#       $UTR$file$RESET"
+	done
+	echo "$output" | tail -1
+else
+	echo "$output"
+fi

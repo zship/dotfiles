@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+
+project_dir="$(findup .git)/.."
+saved="$project_dir/.gitassume"
+
+_save() {
+	pushd "$project_dir" 1>/dev/null
+	assume_files=$(git ls-files -v | grep -E '^h' | perl -pe 's/^h\s(.*)/\1/')
+	if [[ -n "$assume_files" ]]; then
+		echo "Including --assume-unchanged files in stash";
+	fi
+	for file in "$assume_files"; do
+		git update-index --no-assume-unchanged "$file"
+	done
+	echo "$assume_files" > "$saved"
+	popd 1>/dev/null
+}
+
+_apply() {
+	pushd "$project_dir" 1>/dev/null
+	cat "$saved" | xargs -L 1 git update-index --assume-unchanged
+	popd 1>/dev/null
+}
+
+if [[ $# == 0 ]]; then
+	_save
+	command git stash "$@"
+	exit $?
+fi
+
+case "$1" in
+	save)
+		_save
+		command git stash "$@"
+		;;
+	-* | --*)
+		_save
+		command git stash "$@"
+		;;
+	pop)
+		command git stash "$@" 1>/dev/null
+		_apply
+		git xstatus
+		;;
+	apply)
+		command git stash "$@" 1>/dev/null
+		_apply
+		git xstatus
+		;;
+	*)
+		command git stash "$@"
+		;;
+esac
