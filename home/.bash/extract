@@ -1,8 +1,12 @@
 #!/bin/bash
 
 
-set -ex
+set -e
 set -o pipefail
+
+
+__DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+__FILE="$__DIR/"$( basename "${BASH_SOURCE[0]}" )""
 
 
 prev=$(find . -maxdepth 1 | sort)
@@ -92,26 +96,22 @@ _extract() {
 		*.exe)
 			cabextract "$file"
 			;;
-		#*.deb)
-			#tmp="$file_tmp_deb"
-			#mkdir "$tmp"
-			#mkdir -p "$tmp/control"
-			#mkdir -p "$tmp/data"
-			#cd "$tmp"; ar vx "../${tmp}" > /dev/null
-			#cd control; tar -xzvf ../control.tar.gz
-			#cd ../data; tar -xzvf ../data.tar.gz
-			#cd ..
-			#;;
+		*.deb)
+			tmp="$(pwd)/file_tmp_deb"
+			mkdir "$tmp"
+			pushd "$tmp"
+			ar vx "../$file"
+			mkdir -p "$tmp/control"
+			cd "$tmp/control"; tar -xzvf ../control.tar.gz; rm ../control.tar.gz
+			mkdir -p "$tmp/data"
+			cd "$tmp/data"; tar -xzvf ../data.tar.gz; rm ../data.tar.gz
+			popd
+			;;
 		*)
 			echo "File format not supported." >&2
 			return 1
 			;;
 	esac
-}
-
-_extract_fallback() {
-	echo "Falling back to 7z"
-	7z x "$1"
 }
 
 
@@ -120,21 +120,21 @@ if [[ ! -f $1 ]]; then
 	exit 1
 fi
 
+
+args="$@"
 file="$1"
 base=$(dirname "$file")
+output_dir=""
+force_output_dir=""
 
-while [[ $1 != "" ]];  do
+while [[ -n $1 ]];  do
 	case "$1" in
 		-o | --output-dir)
 			shift
 			output_dir="$1"
 			;;
 		-f | --force)
-			force_output_dir=true
-			;;
-		-v | --verbose)
-			verbose=true
-			exec 3>&1
+			force_output_dir="true"
 			;;
 	esac
 	shift
@@ -145,25 +145,20 @@ if [[ -z $output_dir ]]; then
 fi
 
 if [[ -e $output_dir ]]; then
-	if [[ ! $force_output_dir ]]; then
+	if [[ -z $force_output_dir ]]; then
 		echo "$output_dir already exists. Use --force if you're sure."
 		exit 1
 	fi
 	rm -Rf "$output_dir"
 fi
 
-if [[ -n $verbose ]]; then
-	exec 3>&1
-else
-	exec 3>/dev/null
-fi
-
 prev=$(find . -maxdepth 1 | sort)
 
-if [ ! $(_extract "$file" 1>&3) ]; then
+set +e; (set -e && _extract "$file"); ret=$?; set -e
+if [[ $ret != 0 ]]; then
 	_cleanup
-	echo "Falling back to 7z..." 1>&3
-	7z x "$file" 1>&3
+	echo "Falling back to 7z..."
+	7z x "$file"
 fi
 
 curr=$(find . -maxdepth 1 | sort)
@@ -176,11 +171,11 @@ fi
 
 count=$(echo "$added" | wc -l)
 
-if [[ $count -gt 1 ]]; then
+if [[ $count > 1 ]]; then
 	# operation dumped a bunch of files into the cwd
 	mkdir -p "$output_dir"
 	echo "$added" | xargs mv -n --target-directory="$output_dir"
-elif [[ $count -eq 1  && ! -e $output_dir ]]; then
+elif [[ $count == 1  && ! -e $output_dir ]]; then
 	# operation produced one file, but it's not named $output_dir
 	mv "$added" "$output_dir"
 fi
