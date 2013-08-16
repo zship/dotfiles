@@ -1,7 +1,6 @@
 " Use any VIM-specific features
 " This goes first because it sets quite a few options
 set nocompatible
-"set cpoptions=ce " take out most VI-compatible options
 
 
 
@@ -23,16 +22,18 @@ NeoBundle 'editorconfig/editorconfig-vim'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'jakobwesthoff/argumentrewrap'
 NeoBundle 'jnurmine/Zenburn'
-NeoBundle 'kien/ctrlp.vim'
+NeoBundle 'kana/vim-textobj-indent'
+NeoBundle 'kana/vim-textobj-syntax'
+NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'majutsushi/tagbar'
 NeoBundle 'marijnh/tern_for_vim'
-NeoBundle 'michaeljsmith/vim-indent-object'
 NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'Raimondi/delimitMate'
 NeoBundle 'rbgrouleff/bclose.vim'
 NeoBundle 'scrooloose/nerdcommenter'
 NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'scrooloose/syntastic'
+NeoBundle 'Shougo/unite.vim'
 NeoBundle 'sjl/gundo.vim'
 NeoBundle 'tpope/vim-abolish'
 NeoBundle 'tpope/vim-fugitive'
@@ -41,7 +42,6 @@ NeoBundle 'tpope/vim-surround'
 NeoBundle 'ujihisa/neco-ghc'
 NeoBundle 'Valloric/YouCompleteMe'
 NeoBundle 'vim-scripts/argtextobj.vim'
-NeoBundle 'vim-scripts/bufexplorer.zip'
 NeoBundle 'vim-scripts/sh.vim'
 NeoBundle 'zship/CamelCaseMotion'
 NeoBundle 'zship/vim-easymotion'
@@ -49,7 +49,14 @@ NeoBundle 'zship/vim-java-annotation-indent'
 NeoBundle 'zship/vim-pasta'
 NeoBundle 'zship/vim-rsi'
 
-NeoBundleCheck
+NeoBundle 'Shougo/vimproc', {
+\ 'build' : {
+\     'windows' : 'make -f make_mingw32.mak',
+\     'cygwin' : 'make -f make_cygwin.mak',
+\     'mac' : 'make -f make_mac.mak',
+\     'unix' : 'make -f make_unix.mak',
+\    },
+\ }
 
 
 
@@ -60,6 +67,7 @@ filetype indent on     " enable filetype-specific indenting
 filetype plugin on     " enable filetype-specific plugins
 syntax enable          " syntax coloring on
 
+NeoBundleCheck
 
 
 " ========== General ==========
@@ -143,17 +151,6 @@ elseif has("gui_macvim")
 	set guifont=Consolas\ for\ Powerline:h12
 endif
 
-if &term =~ '^xterm'
-	" force 256 colors in terminal
-	set t_Co=256
-
-	" change cursor shape in gnome-terminal
-	" http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
-	au InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-	au InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-	au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-endif
-
 set background=light
 let g:solarized_visibility="low"
 colorscheme solarized
@@ -196,8 +193,8 @@ set virtualedit=all   " cursor can be over areas with no characters
 
 " ========== Autocommands ==========
 
-augroup personal-autocommands
-	autocmd! *
+augroup MyAutoCmd
+	autocmd!
 
 	" Automatically cd into the directory that the file is in
 	autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
@@ -219,6 +216,18 @@ augroup personal-autocommands
 	autocmd BufNewFile,BufRead * set list
 	autocmd BufEnter,BufRead *.hs setlocal omnifunc=necoghc#omnifunc
 augroup END
+
+if &term =~ '^xterm'
+	" force 256 colors in terminal
+	set t_Co=256
+
+	" change cursor shape in gnome-terminal
+	" http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
+	autocmd MyAutoCmd InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
+	autocmd MyAutoCmd InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+	autocmd MyAutoCmd VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+endif
+
 
 
 
@@ -386,6 +395,7 @@ nnoremap ル :3<C-^>
 nnoremap ホ :0<C-^>
 
 
+
 " split/join arguments
 nnoremap <Leader>sa :call argumentrewrap#RewrapArguments()<CR>
 nnoremap <Leader>ja vi(kV:s/,*$//g<CR>gvk:normal $a,<CR>va(J%<Right>x
@@ -407,6 +417,14 @@ nnoremap <Leader>ev :e ~/.vimrc<CR>
 nnoremap <Leader>sv :source ~/.vimrc<CR>
 
 
+call textobj#user#plugin('space', {
+\   'sp': {
+\     'pattern': '\S\+',
+\     'select': ['a<Space>', 'i<Space>'],
+\   }
+\ })
+
+
 
 " ========== Plugin Settings ==========
 
@@ -417,6 +435,20 @@ let g:EasyMotion_mapping_w = '<A-l>'
 let g:EasyMotion_mapping_b = '<A-h>'
 let g:EasyMotion_mapping_j = '<A-j>'
 let g:EasyMotion_mapping_k = '<A-k>'
+
+
+" ---------- unite ------------
+
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+
+nnoremap <A-f> :Unite -no-split -start-insert file_rec/async:!<CR>
+nnoremap <A-s> :Unite -no-split -quick-match buffer<CR>
+nnoremap <A-d> :Unite -no-split -start-insert directory:/<CR>
+
+autocmd MyAutoCmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+	inoremap <buffer><expr> <Tab> unite#do_action('narrow')
+endfunction
 
 
 " ---------- nerdtree ----------
@@ -431,11 +463,6 @@ let NERDTreeMapJumpPrevSibling = "<A-i>"
 " ---------- bclose ----------
 
 cnoremap bd Bclose
-
-
-" ---------- bufexplorer ----------
-
-nnoremap <silent> <A-s> :BufExplorer<CR>
 
 
 " ---------- camelcasemotion ----------
@@ -464,6 +491,7 @@ let g:clang_library_path = "/usr/local/lib"
 " ---------- gundo ------------
 
 nnoremap <C-u> :GundoToggle<CR>
+let g:gundo_right = 1
 
 
 " ---------- YouCompleteMe -----------
@@ -524,7 +552,7 @@ let g:syntastic_check_on_open = 1
 
 " ---------- tagbar ------------
 
-nnoremap <silent> <A-d> :TagbarToggle<CR>
+"nnoremap <silent> <A-d> :TagbarToggle<CR>
 let g:tagbar_autofocus = 1
 let g:tagbar_sort = 0
 
