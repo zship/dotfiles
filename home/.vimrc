@@ -328,37 +328,26 @@ lnoremap <A-/> =>
 " Prevent entering non-breaking space instead of space. Only works on mac.
 lnoremap <A-Space> <Space>
 
-" inner-command remaps to correspond to how I map [(" above
-nnoremap di<A-'> di"
-nnoremap di<A-u> di{
-nnoremap di<A-i> di{
-nnoremap di<A-o> di(
-nnoremap di<A-p> di(
-nnoremap di<A-m> di[
-nnoremap di<A-,> di[
-nnoremap ci<A-'> ci"
-nnoremap ci<A-u> ci{
-nnoremap ci<A-i> ci{
-nnoremap ci<A-o> ci(
-nnoremap ci<A-p> ci(
-nnoremap ci<A-m> ci[
-nnoremap ci<A-,> ci[
-vnoremap a<A-'> a"
-vnoremap a<A-u> a{
-vnoremap a<A-i> a{
-vnoremap a<A-o> a(
-vnoremap a<A-p> a(
-vnoremap a<A-m> a[
-vnoremap a<A-,> a[
-vnoremap i<A-'> i"
-vnoremap i<A-u> i{
-vnoremap i<A-i> i{
-vnoremap i<A-o> i(
-vnoremap i<A-p> i(
-vnoremap i<A-m> i[
-vnoremap i<A-,> i[
+" text-object remaps to correspond to how I map things above
+function! s:map(lhs, rhs)
+	execute 'onoremap' 'i'.a:lhs 'i'.a:rhs
+	execute 'onoremap' 'a'.a:lhs 'a'.a:rhs
+	execute 'vnoremap' 'i'.a:lhs 'i'.a:rhs
+	execute 'vnoremap' 'a'.a:lhs 'a'.a:rhs
+endfunction
+
+call s:map("<A-'>", '"')
+call s:map("<A-u>", '{')
+call s:map("<A-i>", '{')
+call s:map("<A-o>", '(')
+call s:map("<A-p>", '(')
+call s:map("<A-m>", '[')
+call s:map("<A-,>", '[')
+call s:map("<A-j>", '<')
+call s:map("<A-k>", '<')
 
 nnoremap <A-z> ~
+
 
 " indentation command remaps
 vnoremap <A-;> =

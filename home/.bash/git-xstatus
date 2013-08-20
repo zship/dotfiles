@@ -10,7 +10,7 @@ UTR=$(git config --get-color color.status.untracked 'red')
 RESET=$(git config --get-color '' 'reset')
 
 if [[ -n $assume_unchanged ]]; then
-	echo "$output" | head --lines=-1
+	echo "$output"
 	echo "#"
 	echo "# Assume-unchanged files:"
 	echo '#   (use "git update-index --no-assume-unchanged <file>" to start tracking)'
@@ -18,7 +18,6 @@ if [[ -n $assume_unchanged ]]; then
 	for file in "$assume_unchanged"; do
 		echo "#       $UTR$file$RESET"
 	done
-	echo "$output" | tail -1
 else
 	echo "$output"
 fi
