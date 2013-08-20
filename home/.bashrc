@@ -98,6 +98,10 @@ alias egrep='egrep --color=auto'
 alias ll='ls -alFh'
 alias wget='wget -c' # resume wget by default
 
+if man --no-hyphenation --no-justification man &>/dev/null; then
+	alias man='man --no-hyphenation --no-justification';
+fi
+
 
 # package managers
 if [ $(which yum) ]; then

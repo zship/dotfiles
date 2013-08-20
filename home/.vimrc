@@ -179,6 +179,7 @@ set winaltkeys=no   " alt key never hits the window manager
 
 set completeopt=menuone,menu,longest,preview
 set wildmode=longest,list,full   " bash-like completion
+set wildignorecase
 set wildmenu
 
 
@@ -560,6 +561,7 @@ let g:markdown_fenced_languages = ['js=javascript']
 
 let g:airline_powerline_fonts = 1
 let g:airline_detect_whitespace = 0
+let g:airline_enable_syntastic = 0
 let g:airline_theme='solarized'
 
 

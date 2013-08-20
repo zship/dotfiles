@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -o pipefail
 
 
 project_dir="$(findup .git)/.."
@@ -12,11 +11,11 @@ _save() {
 	assume_files=$(git ls-files -v | grep -E '^h' | perl -pe 's/^h\s(.*)/\1/')
 	if [[ -n "$assume_files" ]]; then
 		echo "Including --assume-unchanged files in stash";
+		for file in "$assume_files"; do
+			git update-index --no-assume-unchanged "$file"
+		done
+		echo "$assume_files" > "$saved"
 	fi
-	for file in "$assume_files"; do
-		git update-index --no-assume-unchanged "$file"
-	done
-	echo "$assume_files" > "$saved"
 	popd 1>/dev/null
 }
 
