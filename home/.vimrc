@@ -595,3 +595,16 @@ nnoremap <Leader>ar :Ant reload<CR><CR>
 
 " Eclim shortcuts
 nnoremap <Leader>pr :ProjectRefresh<CR>
+
+
+function! SortParagraphs() range
+	execute a:firstline . ',' . a:lastline . 's/\n/$$$/g'
+	let start = a:firstline
+	let prev = line('$')
+	%s/\$\$\$\$\$\$/$$$\r/g
+	let end = start + (line('$') - prev)
+	execute start . ',' . end . 'sort /\a/ r'
+	execute start . ',' . end . 's/\$\$\$/\r/g'
+endfunction
+
+command! -range Psort <line1>,<line2>call SortParagraphs()
