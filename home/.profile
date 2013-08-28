@@ -13,7 +13,7 @@ add_path "$HOME/.bash"
 add_path "/sbin"
 add_path "/usr/local/ant/bin"
 add_path "$HOME/.cabal/bin"
-add_path "/usr/local/share/npm/bin"
+add_path "/usr/local/share/npm/bin" "/usr/local/share/npm/share/man"
 add_path "$HOME/Downloads/git-tf-2.0.2.20130214"
 
 add_path "$HOME/android-sdk-linux/tools"
