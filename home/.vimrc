@@ -603,7 +603,7 @@ function! SortParagraphs() range
 	let prev = line('$')
 	%s/\$\$\$\$\$\$/$$$\r/g
 	let end = start + (line('$') - prev)
-	execute start . ',' . end . 'sort /\a/ r'
+	execute start . ',' . end . 'sort /\a/ ri'
 	execute start . ',' . end . 's/\$\$\$/\r/g'
 endfunction
 
