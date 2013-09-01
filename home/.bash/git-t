@@ -1,0 +1,10 @@
+#!/bin/bash
+
+tag="$1"
+
+if [[ -z $tag ]]; then
+	echo "semver string is required"
+	exit 1
+fi
+
+git tag -s "v$tag" -m "$tag release"

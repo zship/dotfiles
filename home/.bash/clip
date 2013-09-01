@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+if [[ $1 == "-p" ]]; then
+	if [ $(which xclip) ]; then
+		xclip -selection clipboard -out
+	elif [ $(which pbpaste) ]; then
+		pbpaste
+	fi
+	exit 0
+fi
+
+if [ $(which xclip) ]; then
+	xclip -selection clipboard
+elif [ $(which pbcopy) ]; then
+	pbcopy
+fi
