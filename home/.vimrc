@@ -229,9 +229,14 @@ if &term =~ '^xterm'
 
 	" change cursor shape in gnome-terminal
 	" http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
-	autocmd MyAutoCmd InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-	autocmd MyAutoCmd InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-	autocmd MyAutoCmd VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+	"autocmd MyAutoCmd InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
+	"autocmd MyAutoCmd InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+	"autocmd MyAutoCmd VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+	"
+	if has('mac')
+		let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+		let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+	endif
 endif
 
 
