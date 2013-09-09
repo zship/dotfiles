@@ -546,10 +546,11 @@ let g:necoghc_enable_detailed_browse = 1
 let g:syntastic_mode_map = {
 	\'mode': 'active',
 	\'active_filetypes': [],
-	\'passive_filetypes': ['java', 'html']
+	\'passive_filetypes': ['java']
 \}
 
-let g:syntastic_javascript_checkers=['jshint']
+let g:syntastic_javascript_checkers = ['jshint']
+let g:syntastic_html_checkers = ['w3']
 let g:syntastic_check_on_open = 1
 
 
