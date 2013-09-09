@@ -95,7 +95,7 @@ alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias ll='ls -alFh'
+alias ll='ls -alFhv'
 alias wget='wget -c' # resume wget by default
 
 if man --no-hyphenation --no-justification man &>/dev/null; then
@@ -192,6 +192,15 @@ elif [ $(which brew) ]; then
 	alias pmu='brew update && brew upgrade'
 	alias pmr='brew uninstall'
 fi
+
+
+dirstat() {
+	dir="$1"
+	if [[ -z $dir ]]; then
+		dir="."
+	fi
+	find "$dir" -mindepth 1 -maxdepth 1 -print0 | xargs -0 du -shc | sort -h | tac
+}
 
 
 gitt() {
