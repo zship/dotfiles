@@ -110,6 +110,11 @@ function! IndentationSettings()
 		set tabstop=2
 		set softtabstop=2
 		set shiftwidth=2
+	elseif (&ft == 'markdown')
+		set expandtab
+		set tabstop=4
+		set softtabstop=4
+		set shiftwidth=4
 	else
 		set noexpandtab
 		set tabstop=4
@@ -540,7 +545,6 @@ let g:syntastic_mode_map = {
 \}
 
 let g:syntastic_javascript_checkers=['jshint']
-let g:syntastic_haskell_checkers=['ghc-mod']
 let g:syntastic_check_on_open = 1
 
 
