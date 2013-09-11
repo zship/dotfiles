@@ -12,7 +12,7 @@ add_path "$HOME/bin"
 add_path "$HOME/.bash"
 add_path "/sbin"
 add_path "/usr/local/ant/bin"
-add_path "$HOME/.cabal/bin"
+add_path "$HOME/.cabal/bin" "$HOME/.cabal/share/man"
 add_path "/usr/local/share/npm/bin" "/usr/local/share/npm/share/man"
 add_path "$HOME/Downloads/git-tf-2.0.2.20130214"
 
