@@ -44,7 +44,6 @@ esac
 # Custom Tab Completion
 # ------------------------------------------
 
-. <(grunt --completion=bash)
 . <(npm completion)
 . "$HOME/.bash/.git-completion.bash"
 . "$HOME/.scm_breeze/scm_breeze.sh"
