@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+IFS="$(printf '\n\t')"
+
+arg=''
+if [ -e "$1" ]; then
+	arg="$1"
+else
+	arg="."
+fi
+files=''
+
+if [ -d "$arg/.git" ]; then
+	pushd "$(realpath "$arg")" &>/dev/null
+	files=$(printf "$(git ls-files)\n$(git ls-files --others --exclude-standard)")
+	popd &>/dev/null
+elif [ -d "$arg" ]; then
+	files="$(find "$arg")"
+else
+	files="$arg"
+fi
+
+
+echo -n "$files" | xargs -L 1 stat --format="%Y" | sort -nr | head -1 | xargs -I '{}' date --date='@{}'

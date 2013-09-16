@@ -1,0 +1,68 @@
+#!/bin/bash
+
+set -e
+
+program='dirstat'
+
+version() {
+    echo "$program 0.1.0"
+}
+
+usage() {
+    version
+    cat <<_EOF
+Usage:
+    $program [-m|--modification]
+
+    -m, --modification
+        List the (deep) last-modified time for each directory
+_EOF
+}
+
+# Parse arguments
+if ! opts=$(getopt -n $program \
+-o mh \
+-l modification \
+-l help \
+-- "$@"); then
+    echo "Try $program --help" 1>&2
+    exit 1
+fi
+
+mode='du'
+
+eval set -- "$opts"
+while true; do
+    case $1 in
+    -m|--modification)
+        mode='mod'
+        shift
+        continue
+        ;;
+    -h|--help)
+        usage
+        exit 0
+        ;;
+    --)
+        # no more arguments to parse
+        break
+        ;;
+    *)
+        printf "Unknown option %s\n" "$1"
+        exit 1
+        ;;
+    esac
+done
+shift
+
+dir="$1"
+
+if [[ -z $dir ]]; then
+    dir="."
+fi
+
+if [[ $mode == 'du' ]]; then
+    find "$dir" -mindepth 1 -maxdepth 1 -print0 | xargs -0 du -shc | sort -hr
+elif [[ $mode == 'mod' ]]; then
+    find . -exec stat --format="%Y" \{} \; | sort -nr | head -1 | xargs -I '{}' date --date='@{}'
+fi

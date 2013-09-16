@@ -1,0 +1,50 @@
+#!/bin/bash
+
+status=$(git status --porcelain | grep -v '^$')
+unstaged=$(echo -n "$status" | grep '^??' | wc -l)
+modified=$(echo -n "$status" | grep -v '^??' | wc -l)
+
+echo -n "working -"
+
+if [[ $modified != 0 ]]; then
+	echo -n " $(color red)$modified modified$(color)"
+else
+	echo -n " 0 modified"
+fi
+
+if [[ $unstaged != 0 ]]; then
+	echo -n ", $(color yellow)$unstaged unstaged$(color)"
+else
+	echo -n ", 0 unstaged"
+fi
+
+echo ""
+
+git for-each-ref --format="%(refname:short) %(upstream:short)" refs/heads | \
+while read local remote
+do
+    [[ -z $remote ]] && continue
+	if ! git rev-parse "$remote" &>/dev/null; then
+		echo "$local $(color yellow)(no remote branch)$(color)"
+		continue
+	fi
+
+    left_ahead=$(git rev-list ${remote}..${local} --count -- 2>/dev/null)
+	[[ $? -gt 0 ]] && continue
+	right_ahead=$(git rev-list ${local}..${remote} --count -- 2>/dev/null)
+	[[ $? -gt 0 ]] && continue
+
+	echo -n "$local ("
+	if [[ $left_ahead -gt 0 ]]; then
+		echo -n "$(color red)ahead $left_ahead$(color)"
+	else
+		echo -n "ahead 0"
+	fi
+	if [[ $right_ahead -gt 0 ]]; then
+		echo -n ", $(color yellow)behind $right_ahead$(color)"
+	else
+		echo -n ", behind 0"
+	fi
+	echo -n ") $remote"
+	echo ''
+done
