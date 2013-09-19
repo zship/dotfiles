@@ -2,116 +2,224 @@
 
 set -e
 
-bin_name=$(basename $0)
+program=$(basename $0)
+DIRNAME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
+version() {
+    echo "$program 0.1.0"
+}
 
 
 usage() {
-	echo "Usage: $bin_name COMMAND [args]"
-	echo
-	echo 'Commands:'
-	echo '  update                # Retrieve new lists of packages'
-	echo '  outdated              # List package that have an updated version available'
-	echo '  installed <package>   # List all installed packages for package(or all install packages with no arguments)'
-	echo '  search <package>      # Search for package in all avairable packages'
-	echo '  info <package>        # Print info for package'
-	echo '  depends <package>     # List dpendencies for package'
-	echo '  install <package>     # Install new packages'
-	echo '  reinstall <package>   # ReInstall packages'
-	echo '  upgrade <package>     # Install newer version of outdated packages'
-	echo '  remove <package>      # Remove packages'
-	echo '  purge  <package>      # Remove packages and config files'
-	echo '  clean                 # Erase downloaded archive files'
-	echo '  autoclean             # Erase old downloaded archive files'
-	echo "  commands              # List '$bin_name' all commands"
+    version
+    cat <<_EOF
+Usage: $program COMMAND [args]
+
+Commands:
+  update                # Retrieve new lists of packages
+  outdated              # List package that have an updated version available
+  installed <package>   # List all installed packages for package (or all install packages with no arguments)
+  files <package>       # List all files provided by a package
+  search <package>      # Search for package in all avairable packages
+  info <package>        # Print info for package
+  deplist <package>     # List dpendencies for package
+  install <package>     # Install new packages
+  reinstall <package>   # ReInstall packages
+  upgrade <package>     # Install newer version of outdated packages
+  remove <package>      # Remove packages
+  purge  <package>      # Remove packages and config files
+  clean                 # Erase downloaded archive files
+  autoclean             # Erase old downloaded archive files
+  commands              # List '$program' all commands
+_EOF
+}
+
+
+commands() {
+    local commands='update outdated installed files search info depends install reinstall upgrade remove purge clean autoclean'
+    for command in $(echo $commands); do
+        echo $command
+    done
+}
+
+
+command_not_found() {
+    local command=$1
+    echo "$program: Could not find command '$command'."
+    echo "See '$program help' for more information on a specific command"
+    exit 1
 }
 
 
 command=$1
 shift
 
+
+case $command in
+    help|--help|-h)
+        usage
+        exit 0
+        ;;
+    command|commands)
+        commands
+        exit 0
+        ;;
+    completion)
+        cat "$DIRNAME/p-completion.sh"
+        exit 0
+        ;;
+esac
+
+
 if [ $(which apt-get) ]; then
 
-	case $command in
-		update) sudo apt-get update $@ ;;
-		outdated) apt-get upgrade -s | grep Inst ;;
-		installed) dpkg -l $@;;
-		search) apt-cache search $@ ;;
-		info) apt-cache show $@ ;;
-		depends) apt-cache depends $@ ;;
-		install) sudo apt-get install $@ ;;
-		reinstall) sudo apt-get install --reinstall $@ ;;
-		upgrade) sudo apt-get upgrade $@ ;;
-		remove) sudo apt-get remove $@ ;;
-		purge) sudo apt-get --purge remove $@ ;;
-		clean) sudo apt-get clean ;;
-		autoclean) sudo apt-get autoclean ;;
-		*) command_not_found $command
-	esac
+    case $command in
+        update)
+            sudo apt-get update "$@"
+            ;;
+        outdated)
+            apt-get upgrade -s | grep Inst
+            ;;
+        installed)
+            dpkg -l | grep -i "$@"
+            ;;
+        files)
+            dpkg-query -L "$@"
+            ;;
+        search)
+            apt-cache search "$@"
+            ;;
+        info)
+            apt-cache show "$@"
+            ;;
+        deplist)
+            apt-cache depends "$@"
+            ;;
+        install)
+            sudo apt-get install "$@"
+            ;;
+        reinstall)
+            sudo apt-get install --reinstall "$@"
+            ;;
+        upgrade)
+            sudo apt-get upgrade "$@"
+            ;;
+        remove)
+            sudo apt-get remove "$@"
+            ;;
+        purge)
+            sudo apt-get --purge remove "$@"
+            ;;
+        clean)
+            sudo apt-get clean
+            ;;
+        autoclean)
+            sudo apt-get autoclean
+            ;;
+        *)
+            command_not_found $command
+    esac
 
 elif [ $(which brew) ]; then
 
-	case $command in
-		update) brew update ;;
-		outdated) brew outdated $@;;
-		installed) brew list $@ ;;
-		search) brew search $@ ;;
-		info) brew info $@ ;;
-		depends) brew deps $@ ;;
-		install) brew install $@ ;;
-		reinstall) echo "Not found: '$command', see https://github.com/mxcl/homebrew/issues/12511" ;;
-		upgrade) brew upgrade $@ ;;
-		remove) brew remove $@ ;;
-		purge) echo "Not found: '$command', use 'remove'" ;;
-		clean) echo "Not found: '$command', use 'autoclean'" ;;
-		autoclean) brew cleanup ;;
-		*) command_not_found $command
-	esac
+    case $command in
+        update)
+            brew update
+            ;;
+        outdated)
+            brew outdated "$@";;
+        installed)
+            echo "Not found: '$command'"
+            ;;
+        files)
+            brew list --verbose "$@"
+            ;;
+        search)
+            brew search "$@"
+            echo '---'
+            brew desc -s "$@"
+            ;;
+        info)
+            brew info "$@"
+            ;;
+        deplist)
+            brew deps "$@"
+            ;;
+        install)
+            brew install "$@"
+            ;;
+        reinstall)
+            echo "Not found: '$command', see https://github.com/mxcl/homebrew/issues/12511"
+            ;;
+        upgrade)
+            brew upgrade "$@"
+            ;;
+        remove)
+            brew remove "$@"
+            ;;
+        purge)
+            echo "Not found: '$command', use 'remove'"
+            ;;
+        clean)
+            echo "Not found: '$command', use 'autoclean'"
+            ;;
+        autoclean)
+            brew cleanup
+            ;;
+        *)
+            command_not_found $command
+    esac
 
 elif [ $(which yum) ]; then
 
-	case $command in
-		update) yum check-update ;;
-		outdated) yum check-update ;;
-		installed) repoquery -a $@ ;;
-		search) yum search $@ ;;
-		info) yum info $@ ;;
-		depends) yum deplist $@ ;;
-		install) sudo yum install $@ ;;
-		reinstall) sudo yum reinstall $@ ;;
-		upgrade) sudo yum update $@ ;;
-		remove) sudo yum erase $@ ;;
-		purge) echo "Not found: '$command', use 'remove'" ;;
-		clean) sudo yum clean ;;
-		autoclean) sudo yum clean ;;
-		*) command_not_found $command
-	esac
+    case $command in
+        update)
+            yum check-update
+            ;;
+        outdated)
+            yum check-update
+            ;;
+        installed)
+            rpm -qa | grep "$@"
+            ;;
+        files)
+            rpm -ql "$@"
+            ;;
+        search)
+            sudo yum search all --showduplicates --debuglevel=0 --errorlevel=0 "$@"
+            echo '---'
+            sudo yum list --showduplicates --debuglevel=0 --errorlevel=0 "$@"
+            ;;
+        info)
+            sudo yum info --debuglevel=0 --errorlevel=0 "$@"
+            ;;
+        deplist)
+            yum deplist "$@"
+            ;;
+        install)
+            sudo yum install "$@"
+            ;;
+        reinstall)
+            sudo yum reinstall "$@"
+            ;;
+        upgrade)
+            sudo yum update "$@"
+            ;;
+        remove)
+            sudo yum erase "$@"
+            ;;
+        purge)
+            echo "Not found: '$command', use 'remove'"
+            ;;
+        clean)
+            sudo yum clean
+            ;;
+        autoclean)
+            sudo yum clean
+            ;;
+        *)
+            command_not_found $command
+    esac
 
 fi
-
-
-commands() {
-	local commands='update outdated installed search info depends install reinstall upgrade remove purge clean autoclean'
-	for command in $(echo $commands); do
-		echo $command
-	done
-}
-
-
-command_not_found() {
-	local command=$1
-	echo "$bin_name: Could not find command '$command'."
-	echo "See '$bin_name help' for more information on a specific command"
-	exit 1
-}
-
-
-case $1 in
-	help|--help|-h)
-		usage
-		exit 0
-		;;
-	command|commands)
-		commands
-		exit 0
-		;;
-esac
