@@ -20,7 +20,7 @@ _EOF
 }
 
 # Parse arguments
-if ! opts=$(getopt -n $program \
+if ! opts=$(gnu-getopt -n $program \
 -o mh \
 -l modification \
 -l help \

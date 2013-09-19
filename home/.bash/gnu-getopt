@@ -1,15 +1,11 @@
 #!/bin/bash
 
-getopt --test
+getopt --test &>/dev/null
 
 if [ $? == 4 ]; then
-	echo "$(which getopt)"
-	exit 0
+	"$(which getopt)" "$@"
+elif [ $(which brew) ]; then
+	"$(find $(brew --cellar) -name 'getopt')" "$@"
+else
+	exit 1
 fi
-
-if [ $(which brew) ]; then
-	echo "$(find $(brew --cellar) -name 'getopt')"
-	exit 0
-fi
-
-exit 1
