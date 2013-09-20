@@ -30,7 +30,7 @@ shopt -s checkwinsize
 shopt -s globstar # make "**/*.ext" work
 shopt -s dotglob  # include dotfiles in globbing
 
-PS1="$(color faint)[$(color off)\u$(color bold)@$(color off)\h \W$(color faint)]$(color off)$(color bold)\$$(color off) "
+PS1="[\u\[$(color bold)\]@\[$(color off)\]\h \W]\[$(color bold)\]\$\[$(color off)\] "
 
 
 # ------------------------------------------
