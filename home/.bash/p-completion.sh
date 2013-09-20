@@ -21,7 +21,7 @@ complete_on_all() {
     if [ $pkg_manager == 'apt' ]; then
         names=$(dpkg-query --show --showformat='${Package}\n' "$1*")
     elif [ $pkg_manager == 'brew' ]; then
-        names=$(find "$(brew --prefix)/Library/Formulas" -name '*.rb' | basename | sed 's/\.rb//g' | grep "^$1")
+        names=$(find "$(brew --prefix)/Library/Formula" -name '*.rb' | perl -pe 's/.*\/(.*).rb$/\1/' | grep "^$1")
     elif [ $pkg_manager == 'yum' ]; then
         names=$(yum list | grep "^$1" | perl -pe 's/^(.*)\s+.*/\1/g')
     fi
