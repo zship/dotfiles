@@ -116,6 +116,11 @@ function! IndentationSettings()
 		set tabstop=4
 		set softtabstop=4
 		set shiftwidth=4
+	elseif (&ft == 'sh')
+		set expandtab
+		set tabstop=4
+		set softtabstop=4
+		set shiftwidth=4
 	else
 		set noexpandtab
 		set tabstop=4
