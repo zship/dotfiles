@@ -1,17 +1,5 @@
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
-fi
-
-# enable programmable completion features
-if [ -f /etc/bash_completion ]; then
-	. /etc/bash_completion
-fi
-
-if [[ $(which brew) && -f $(brew --prefix)/share/bash-completion/bash_completion ]]; then
-	. $(brew --prefix)/share/bash-completion/bash_completion
-fi
-
+# If not running interactively, don't do anything
+[ -z "$PS1" ] &&  return
 
 # ------------------------------------------
 # General Settings
@@ -30,12 +18,18 @@ shopt -s checkwinsize
 shopt -s globstar # make "**/*.ext" work
 shopt -s dotglob  # include dotfiles in globbing
 
-PS1="[\u\[$(color bold)\]@\[$(color off)\]\h \W]\[$(color bold)\]\$\[$(color off)\] "
+PS1="\[$(color bold green)\]\u@\h \[$(color blue)\]\w \[$(color green)\]\$\[$(color off)\] "
 
 
 # ------------------------------------------
 # Custom Tab Completion
 # ------------------------------------------
+
+if [ -f /etc/bash_completion ]; then
+	. /etc/bash_completion
+elif [[ $(which brew) && -f $(brew --prefix)/share/bash-completion/bash_completion ]]; then
+	. $(brew --prefix)/share/bash-completion/bash_completion
+fi
 
 . <(p completion)
 . <(npm completion)
@@ -66,11 +60,6 @@ alias tmux="TERM=screen-256color tmux"
 if man --no-hyphenation --no-justification man &>/dev/null; then
 	alias man='man --no-hyphenation --no-justification';
 fi
-
-
-pss() {
-	ps aux | grep "$1" | grep -v "$(whoami).*grep"
-}
 
 
 make() {
