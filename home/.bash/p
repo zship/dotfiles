@@ -17,27 +17,28 @@ usage() {
 Usage: $program COMMAND [args]
 
 Commands:
-  update                # Retrieve new lists of packages
-  outdated              # List package that have an updated version available
-  installed <package>   # List all installed packages for package (or all install packages with no arguments)
+  update                # Retrieve list of updated packages
+  outdated              # List packages that have an updated version available
+  installed [<package>] # List installed packages matching a pattern
   files <package>       # List all files provided by a package
-  search <package>      # Search for package in all avairable packages
+  search <package>      # Search for a package in all available packages
   info <package>        # Print info for package
-  deplist <package>     # List dpendencies for package
+  deplist <package>     # List dependencies for package
+  whatprovides <file>   # List packages which provide the given file
   install <package>     # Install new packages
-  reinstall <package>   # ReInstall packages
-  upgrade <package>     # Install newer version of outdated packages
+  reinstall <package>   # Reinstall packages
+  upgrade [<package>]   # Install newer version of outdated packages
   remove <package>      # Remove packages
-  purge  <package>      # Remove packages and config files
+  purge <package>       # Remove packages and config files
   clean                 # Erase downloaded archive files
   autoclean             # Erase old downloaded archive files
-  commands              # List '$program' all commands
+  commands              # List available commands
 _EOF
 }
 
 
 commands() {
-    local commands='update outdated installed files search info depends install reinstall upgrade remove purge clean autoclean'
+    local commands='update outdated installed files search info depends install reinstall upgrade remove purge whatprovides clean autoclean'
     for command in $(echo $commands); do
         echo $command
     done
@@ -71,36 +72,20 @@ main() {
             ;;
     esac
 
-
-    if [ $(which apt-get) ]; then
+    if which apt-get &>/dev/null; then
 
         case $command in
-            update)
-                sudo apt-get update "$@"
-                ;;
-            outdated)
-                apt-get upgrade -s | grep Inst
-                ;;
-            installed)
-                dpkg -l | grep -i "$@"
-                ;;
-            files)
-                dpkg-query -L "$@"
-                ;;
             search)
                 apt-cache search "$@"
-                ;;
-            info)
-                apt-cache show "$@"
-                ;;
-            deplist)
-                apt-cache depends "$@"
                 ;;
             install)
                 sudo apt-get install "$@"
                 ;;
             reinstall)
                 sudo apt-get install --reinstall "$@"
+                ;;
+            update)
+                sudo apt-get update "$@"
                 ;;
             upgrade)
                 sudo apt-get upgrade "$@"
@@ -111,6 +96,24 @@ main() {
             purge)
                 sudo apt-get --purge remove "$@"
                 ;;
+            info)
+                apt-cache show "$@"
+                ;;
+            files)
+                dpkg-query -L "$@"
+                ;;
+            deplist)
+                apt-cache depends "$@"
+                ;;
+            whatprovides)
+                apt-file list --fixed-string "$1" | grep "/$1\$"
+                ;;
+            installed)
+                dpkg-query -l "$1*" | grep '^ii'
+                ;;
+            outdated)
+                apt-get upgrade -s | grep Inst
+                ;;
             clean)
                 sudo apt-get clean
                 ;;
@@ -119,38 +122,33 @@ main() {
                 ;;
             *)
                 command_not_found $command
+                ;;
         esac
 
-    elif [ $(which brew) ]; then
+    elif which brew &>/dev/null; then
 
         case $command in
-            update)
-                brew update
-                ;;
-            outdated)
-                brew outdated "$@";;
-            installed)
-                echo "Not found: '$command'"
-                ;;
-            files)
-                brew list --verbose "$@"
-                ;;
             search)
-                brew search "$@"
-                echo '---'
-                brew desc -s "$@"
-                ;;
-            info)
-                brew info "$@"
-                ;;
-            deplist)
-                brew deps "$@"
+                s_name="$(brew search "$@")"
+                s_desc="$(brew desc -s "$@")"
+                if [ -n "$s_name" ]; then
+                    echo "$s_name"
+                fi
+                if [ -n "$s_name" && -n "$s_desc"]; then
+                    echo '---'
+                fi
+                if [ -n "$s_desc"]; then
+                    echo "$s_desc"
+                fi
                 ;;
             install)
                 brew install "$@"
                 ;;
             reinstall)
                 echo "Not found: '$command', see https://github.com/mxcl/homebrew/issues/12511"
+                ;;
+            update)
+                brew update
                 ;;
             upgrade)
                 brew upgrade "$@"
@@ -161,6 +159,24 @@ main() {
             purge)
                 echo "Not found: '$command', use 'remove'"
                 ;;
+            info)
+                brew info "$@"
+                ;;
+            files)
+                brew list --verbose "$@"
+                ;;
+            deplist)
+                brew deps "$@"
+                ;;
+            whatprovides)
+                echo "Not found: '$command'"
+                ;;
+            installed)
+                echo "Not found: '$command'"
+                ;;
+            outdated)
+                brew outdated "$@"
+                ;;
             clean)
                 echo "Not found: '$command', use 'autoclean'"
                 ;;
@@ -169,39 +185,33 @@ main() {
                 ;;
             *)
                 command_not_found $command
+                ;;
         esac
 
-    elif [ $(which yum) ]; then
+    elif which yum &>/dev/null; then
 
         case $command in
-            update)
-                yum check-update
-                ;;
-            outdated)
-                yum check-update
-                ;;
-            installed)
-                rpm -qa | grep "$@"
-                ;;
-            files)
-                rpm -ql "$@"
-                ;;
             search)
-                sudo yum search all --showduplicates --debuglevel=0 --errorlevel=0 "$@"
-                echo '---'
-                sudo yum list --showduplicates --debuglevel=0 --errorlevel=0 "$@"
-                ;;
-            info)
-                sudo yum info --debuglevel=0 --errorlevel=0 "$@"
-                ;;
-            deplist)
-                yum deplist "$@"
+                s_name="$(sudo yum search all --showduplicates --debuglevel=0 --errorlevel=0 "$@")"
+                s_desc="$(sudo yum list --showduplicates --debuglevel=0 --errorlevel=0 "$@")"
+                if [ -n "$s_name" ]; then
+                    echo "$s_name"
+                fi
+                if [ -n "$s_name" && -n "$s_desc"]; then
+                    echo '---'
+                fi
+                if [ -n "$s_desc"]; then
+                    echo "$s_desc"
+                fi
                 ;;
             install)
                 sudo yum install "$@"
                 ;;
             reinstall)
                 sudo yum reinstall "$@"
+                ;;
+            update)
+                yum check-update
                 ;;
             upgrade)
                 sudo yum update "$@"
@@ -212,6 +222,24 @@ main() {
             purge)
                 echo "Not found: '$command', use 'remove'"
                 ;;
+            info)
+                sudo yum info --debuglevel=0 --errorlevel=0 "$@"
+                ;;
+            files)
+                rpm -ql "$@"
+                ;;
+            deplist)
+                yum deplist "$@"
+                ;;
+            whatprovides)
+                yum whatprovides "$@"
+                ;;
+            installed)
+                rpm -qa | grep "$@"
+                ;;
+            outdated)
+                yum check-update
+                ;;
             clean)
                 sudo yum clean
                 ;;
@@ -220,9 +248,11 @@ main() {
                 ;;
             *)
                 command_not_found $command
+                ;;
         esac
 
     fi
 }
+
 
 main "$@"
