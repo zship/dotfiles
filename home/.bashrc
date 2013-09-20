@@ -68,6 +68,11 @@ if man --no-hyphenation --no-justification man &>/dev/null; then
 fi
 
 
+pss() {
+	ps aux | grep "$1" | grep -v "$(whoami).*grep"
+}
+
+
 make() {
 	makefile="$(findup Makefile)"
 	pushd "$(dirname $makefile)" 1>/dev/null
