@@ -52,174 +52,177 @@ command_not_found() {
 }
 
 
-command=$1
-shift
-
-
-case $command in
-    help|--help|-h)
-        usage
-        exit 0
-        ;;
-    command|commands)
-        commands
-        exit 0
-        ;;
-    completion)
-        cat "$DIRNAME/p-completion.sh"
-        exit 0
-        ;;
-esac
-
-
-if [ $(which apt-get) ]; then
+main() {
+    local command=$1
+    shift
 
     case $command in
-        update)
-            sudo apt-get update "$@"
+        help|--help|-h)
+            usage
+            exit 0
             ;;
-        outdated)
-            apt-get upgrade -s | grep Inst
+        command|commands)
+            commands
+            exit 0
             ;;
-        installed)
-            dpkg -l | grep -i "$@"
+        completion)
+            cat "$DIRNAME/p-completion.sh"
+            exit 0
             ;;
-        files)
-            dpkg-query -L "$@"
-            ;;
-        search)
-            apt-cache search "$@"
-            ;;
-        info)
-            apt-cache show "$@"
-            ;;
-        deplist)
-            apt-cache depends "$@"
-            ;;
-        install)
-            sudo apt-get install "$@"
-            ;;
-        reinstall)
-            sudo apt-get install --reinstall "$@"
-            ;;
-        upgrade)
-            sudo apt-get upgrade "$@"
-            ;;
-        remove)
-            sudo apt-get remove "$@"
-            ;;
-        purge)
-            sudo apt-get --purge remove "$@"
-            ;;
-        clean)
-            sudo apt-get clean
-            ;;
-        autoclean)
-            sudo apt-get autoclean
-            ;;
-        *)
-            command_not_found $command
     esac
 
-elif [ $(which brew) ]; then
 
-    case $command in
-        update)
-            brew update
-            ;;
-        outdated)
-            brew outdated "$@";;
-        installed)
-            echo "Not found: '$command'"
-            ;;
-        files)
-            brew list --verbose "$@"
-            ;;
-        search)
-            brew search "$@"
-            echo '---'
-            brew desc -s "$@"
-            ;;
-        info)
-            brew info "$@"
-            ;;
-        deplist)
-            brew deps "$@"
-            ;;
-        install)
-            brew install "$@"
-            ;;
-        reinstall)
-            echo "Not found: '$command', see https://github.com/mxcl/homebrew/issues/12511"
-            ;;
-        upgrade)
-            brew upgrade "$@"
-            ;;
-        remove)
-            brew remove "$@"
-            ;;
-        purge)
-            echo "Not found: '$command', use 'remove'"
-            ;;
-        clean)
-            echo "Not found: '$command', use 'autoclean'"
-            ;;
-        autoclean)
-            brew cleanup
-            ;;
-        *)
-            command_not_found $command
-    esac
+    if [ $(which apt-get) ]; then
 
-elif [ $(which yum) ]; then
+        case $command in
+            update)
+                sudo apt-get update "$@"
+                ;;
+            outdated)
+                apt-get upgrade -s | grep Inst
+                ;;
+            installed)
+                dpkg -l | grep -i "$@"
+                ;;
+            files)
+                dpkg-query -L "$@"
+                ;;
+            search)
+                apt-cache search "$@"
+                ;;
+            info)
+                apt-cache show "$@"
+                ;;
+            deplist)
+                apt-cache depends "$@"
+                ;;
+            install)
+                sudo apt-get install "$@"
+                ;;
+            reinstall)
+                sudo apt-get install --reinstall "$@"
+                ;;
+            upgrade)
+                sudo apt-get upgrade "$@"
+                ;;
+            remove)
+                sudo apt-get remove "$@"
+                ;;
+            purge)
+                sudo apt-get --purge remove "$@"
+                ;;
+            clean)
+                sudo apt-get clean
+                ;;
+            autoclean)
+                sudo apt-get autoclean
+                ;;
+            *)
+                command_not_found $command
+        esac
 
-    case $command in
-        update)
-            yum check-update
-            ;;
-        outdated)
-            yum check-update
-            ;;
-        installed)
-            rpm -qa | grep "$@"
-            ;;
-        files)
-            rpm -ql "$@"
-            ;;
-        search)
-            sudo yum search all --showduplicates --debuglevel=0 --errorlevel=0 "$@"
-            echo '---'
-            sudo yum list --showduplicates --debuglevel=0 --errorlevel=0 "$@"
-            ;;
-        info)
-            sudo yum info --debuglevel=0 --errorlevel=0 "$@"
-            ;;
-        deplist)
-            yum deplist "$@"
-            ;;
-        install)
-            sudo yum install "$@"
-            ;;
-        reinstall)
-            sudo yum reinstall "$@"
-            ;;
-        upgrade)
-            sudo yum update "$@"
-            ;;
-        remove)
-            sudo yum erase "$@"
-            ;;
-        purge)
-            echo "Not found: '$command', use 'remove'"
-            ;;
-        clean)
-            sudo yum clean
-            ;;
-        autoclean)
-            sudo yum clean
-            ;;
-        *)
-            command_not_found $command
-    esac
+    elif [ $(which brew) ]; then
 
-fi
+        case $command in
+            update)
+                brew update
+                ;;
+            outdated)
+                brew outdated "$@";;
+            installed)
+                echo "Not found: '$command'"
+                ;;
+            files)
+                brew list --verbose "$@"
+                ;;
+            search)
+                brew search "$@"
+                echo '---'
+                brew desc -s "$@"
+                ;;
+            info)
+                brew info "$@"
+                ;;
+            deplist)
+                brew deps "$@"
+                ;;
+            install)
+                brew install "$@"
+                ;;
+            reinstall)
+                echo "Not found: '$command', see https://github.com/mxcl/homebrew/issues/12511"
+                ;;
+            upgrade)
+                brew upgrade "$@"
+                ;;
+            remove)
+                brew remove "$@"
+                ;;
+            purge)
+                echo "Not found: '$command', use 'remove'"
+                ;;
+            clean)
+                echo "Not found: '$command', use 'autoclean'"
+                ;;
+            autoclean)
+                brew cleanup
+                ;;
+            *)
+                command_not_found $command
+        esac
+
+    elif [ $(which yum) ]; then
+
+        case $command in
+            update)
+                yum check-update
+                ;;
+            outdated)
+                yum check-update
+                ;;
+            installed)
+                rpm -qa | grep "$@"
+                ;;
+            files)
+                rpm -ql "$@"
+                ;;
+            search)
+                sudo yum search all --showduplicates --debuglevel=0 --errorlevel=0 "$@"
+                echo '---'
+                sudo yum list --showduplicates --debuglevel=0 --errorlevel=0 "$@"
+                ;;
+            info)
+                sudo yum info --debuglevel=0 --errorlevel=0 "$@"
+                ;;
+            deplist)
+                yum deplist "$@"
+                ;;
+            install)
+                sudo yum install "$@"
+                ;;
+            reinstall)
+                sudo yum reinstall "$@"
+                ;;
+            upgrade)
+                sudo yum update "$@"
+                ;;
+            remove)
+                sudo yum erase "$@"
+                ;;
+            purge)
+                echo "Not found: '$command', use 'remove'"
+                ;;
+            clean)
+                sudo yum clean
+                ;;
+            autoclean)
+                sudo yum clean
+                ;;
+            *)
+                command_not_found $command
+        esac
+
+    fi
+}
+
+main "$@"
