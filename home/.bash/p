@@ -134,10 +134,10 @@ main() {
                 if [ -n "$s_name" ]; then
                     echo "$s_name"
                 fi
-                if [ -n "$s_name" && -n "$s_desc"]; then
+                if [ -n "$s_name" && -n "$s_desc" ]; then
                     echo '---'
                 fi
-                if [ -n "$s_desc"]; then
+                if [ -n "$s_desc" ]; then
                     echo "$s_desc"
                 fi
                 ;;
@@ -197,10 +197,10 @@ main() {
                 if [ -n "$s_name" ]; then
                     echo "$s_name"
                 fi
-                if [ -n "$s_name" && -n "$s_desc"]; then
+                if [ -n "$s_name" && -n "$s_desc" ]; then
                     echo '---'
                 fi
-                if [ -n "$s_desc"]; then
+                if [ -n "$s_desc" ]; then
                     echo "$s_desc"
                 fi
                 ;;
