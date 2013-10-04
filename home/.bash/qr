@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+main() {
+    tmp_dir="$(mktemp -d)"
+    qrencode "$1" --size=10 --output="$tmp_dir/out.png"
+    open -W -a Preview "$tmp_dir/out.png"
+    rm -Rf "$tmp_dir"
+}
+
+main "$@"
