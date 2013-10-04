@@ -131,13 +131,13 @@ main() {
             search)
                 s_name="$(brew search "$@")"
                 s_desc="$(brew desc -s "$@")"
-                if [ -n "$s_name" ]; then
+                if [[ -n "$s_name" ]]; then
                     echo "$s_name"
                 fi
-                if [ -n "$s_name" && -n "$s_desc" ]; then
+                if [[ -n "$s_name" && -n "$s_desc" ]]; then
                     echo '---'
                 fi
-                if [ -n "$s_desc" ]; then
+                if [[ -n "$s_desc" ]]; then
                     echo "$s_desc"
                 fi
                 ;;
@@ -194,13 +194,13 @@ main() {
             search)
                 s_name="$(sudo yum search all --showduplicates --debuglevel=0 --errorlevel=0 "$@")"
                 s_desc="$(sudo yum list --showduplicates --debuglevel=0 --errorlevel=0 "$@")"
-                if [ -n "$s_name" ]; then
+                if [[ -n "$s_name" ]]; then
                     echo "$s_name"
                 fi
-                if [ -n "$s_name" && -n "$s_desc" ]; then
+                if [[ -n "$s_name" && -n "$s_desc" ]]; then
                     echo '---'
                 fi
-                if [ -n "$s_desc" ]; then
+                if [[ -n "$s_desc" ]]; then
                     echo "$s_desc"
                 fi
                 ;;
