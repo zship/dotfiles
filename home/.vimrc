@@ -448,9 +448,9 @@ let g:EasyMotion_mapping_k = '<A-k>'
 "call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#custom#source('buffer', 'converters', ['converter_file_directory'])
 
-nnoremap <A-f> :Unite -no-split -toggle -auto-preview -start-insert file_rec/async:!<CR>
-nnoremap <A-s> :Unite -no-split -toggle -auto-preview -quick-match buffer<CR>
-nnoremap <A-d> :Unite -no-split -toggle -auto-preview -start-insert directory:/<CR>
+nnoremap <A-f> :Unite -no-split -toggle -start-insert file_rec/async:!<CR>
+nnoremap <A-s> :Unite -no-split -toggle -quick-match buffer<CR>
+nnoremap <A-d> :Unite -no-split -toggle -start-insert directory:/<CR>
 
 autocmd MyAutoCmd FileType unite call s:unite_settings()
 function! s:unite_settings()
