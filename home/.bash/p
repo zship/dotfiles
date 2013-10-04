@@ -251,6 +251,59 @@ main() {
                 ;;
         esac
 
+    elif which apt-cyg &>/dev/null; then
+
+        case $command in
+            search)
+                apt-cyg find --noupdate "$@"
+                ;;
+            install)
+                apt-cyg install --noupdate "$@"
+                ;;
+            reinstall)
+                command_not_found $command
+                ;;
+            update)
+                apt-cyg update
+                ;;
+            upgrade)
+                command_not_found $command
+                ;;
+            remove)
+                apt-cyg remove --noupdate "$@"
+                ;;
+            purge)
+                echo "Not found: '$command', use 'remove'"
+                ;;
+            info)
+                apt-cyg describe "$@" --noupdate | sed -n "/^$1$/,/^$/{p}"
+                ;;
+            files)
+                command_not_found $command
+                ;;
+            deplist)
+                p info "$@" | grep '^requires:' | sed 's/^requires: \(.*\)/\1/' | sed 's/ /\n/g' | sort
+                ;;
+            whatprovides)
+                apt-cyg packageof --noupdate "$@"
+                ;;
+            installed)
+                apt-cyg show | grep "$@"
+                ;;
+            outdated)
+                command_not_found $command
+                ;;
+            clean)
+                command_not_found $command
+                ;;
+            autoclean)
+                command_not_found $command
+                ;;
+            *)
+                command_not_found $command
+                ;;
+        esac
+
     fi
 }
 
