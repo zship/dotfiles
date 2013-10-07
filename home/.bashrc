@@ -25,16 +25,16 @@ PS1="\[$(color bold green)\]\u@\h \[$(color blue)\]\w \[$(color green)\]\$\[$(co
 # Custom Tab Completion
 # ------------------------------------------
 
-if [ -f /etc/bash_completion ]; then
-	. /etc/bash_completion
-elif [[ $(which brew) && -f $(brew --prefix)/share/bash-completion/bash_completion ]]; then
-	. $(brew --prefix)/share/bash-completion/bash_completion
-fi
+my_completions() {
+    . /etc/bash_completion
+    hash brew && . $(brew --prefix)/share/bash-completion/bash_completion
+    hash npm && . <(npm completion)
+    . <(p completion)
+    . "$HOME/.bash/.git-completion.bash"
+    . "$HOME/.scm_breeze/scm_breeze.sh"
+}
 
-. <(p completion)
-. <(npm completion)
-. "$HOME/.bash/.git-completion.bash"
-. "$HOME/.scm_breeze/scm_breeze.sh"
+my_completions &> /dev/null
 
 
 # ------------------------------------------
@@ -44,7 +44,7 @@ fi
 
 # reference: apt-get suggestions are from "command_not_found_handle"
 
-if [ -x /usr/bin/atop ]; then
+if hash atop &> /dev/null; then
 	alias top='atop'
 fi
 
