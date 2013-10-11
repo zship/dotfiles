@@ -235,7 +235,7 @@ main() {
                 yum whatprovides "$@"
                 ;;
             installed)
-                rpm -qa | grep "$@"
+                rpm -qa
                 ;;
             outdated)
                 yum check-update
@@ -288,7 +288,7 @@ main() {
                 apt-cyg packageof --noupdate "$@"
                 ;;
             installed)
-                apt-cyg show | grep "$@"
+                apt-cyg show
                 ;;
             outdated)
                 command_not_found $command
