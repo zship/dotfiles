@@ -47,7 +47,6 @@ NeoBundle 'zship/CamelCaseMotion'
 NeoBundle 'zship/vim-easymotion'
 NeoBundle 'zship/vim-java-annotation-indent'
 NeoBundle 'zship/vim-pasta'
-NeoBundle 'zship/vim-rsi'
 
 NeoBundle 'Shougo/vimproc', {
 \ 'build' : {
@@ -243,75 +242,6 @@ if &term =~ '^xterm'
 		let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 		let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 	endif
-
-	" enable alt-key mappings in terminal
-	" http://stackoverflow.com/questions/6778961/alt-key-shortcuts-not-working-on-gnome-terminal-with-vim
-	exec "set <A-q>=\eq"
-	exec "set <A-w>=\ew"
-	exec "set <A-e>=\ee"
-	exec "set <A-r>=\er"
-	exec "set <A-t>=\et"
-	exec "set <A-y>=\ey"
-	exec "set <A-u>=\eu"
-	exec "set <A-i>=\ei"
-	exec "set <A-o>=\eo"
-	exec "set <A-p>=\ep"
-	exec "set <A-a>=\ea"
-	exec "set <A-s>=\es"
-	exec "set <A-d>=\ed"
-	exec "set <A-f>=\ef"
-	exec "set <A-g>=\eg"
-	exec "set <A-h>=\eh"
-	exec "set <A-j>=\ej"
-	exec "set <A-k>=\ek"
-	exec "set <A-l>=\el"
-	exec "set <A-;>=\e;"
-	exec "set <A-'>=\e'"
-	exec "set <A-z>=\ez"
-	exec "set <A-x>=\ex"
-	exec "set <A-c>=\ec"
-	exec "set <A-v>=\ev"
-	exec "set <A-b>=\eb"
-	exec "set <A-n>=\en"
-	exec "set <A-m>=\em"
-	exec "set <A-,>=\e,"
-	exec "set <A-.>=\e."
-	exec "set <A-/>=\e/"
-
-	exec "imap \eq <A-q>"
-	exec "imap \ew <A-w>"
-	exec "imap \ee <A-e>"
-	exec "imap \er <A-r>"
-	exec "imap \et <A-t>"
-	exec "imap \ey <A-y>"
-	exec "imap \eu <A-u>"
-	exec "imap \ei <A-i>"
-	exec "imap \eo <A-o>"
-	exec "imap \ep <A-p>"
-	exec "imap \ea <A-a>"
-	exec "imap \es <A-s>"
-	exec "imap \ed <A-d>"
-	exec "imap \ef <A-f>"
-	exec "imap \eg <A-g>"
-	exec "imap \eh <A-h>"
-	exec "imap \ej <A-j>"
-	exec "imap \ek <A-k>"
-	exec "imap \el <A-l>"
-	exec "imap \e; <A-;>"
-	exec "imap \e' <A-'>"
-	exec "imap \ez <A-z>"
-	exec "imap \ex <A-x>"
-	exec "imap \ec <A-c>"
-	exec "imap \ev <A-v>"
-	exec "imap \eb <A-b>"
-	exec "imap \en <A-n>"
-	exec "imap \em <A-m>"
-	exec "imap \e, <A-,>"
-	exec "imap \e. <A-.>"
-	exec "imap \e/ <A-/>"
-
-	set timeout ttimeoutlen=50
-
 endif
 
 
@@ -323,7 +253,7 @@ set iminsert=1  " enable :lmap for easier insert/command/search/replace mappings
 set imsearch=-1 " use value of iminsert for searching
 
 if has("gui_macvim")
-	" Enable <M-...> keybindings in Mac
+	" Enable alt keybindings in MacVim
 	set macmeta
 endif
 
@@ -357,7 +287,6 @@ nnoremap <expr> <CR> (&l:buftype == '') ? "o\<Esc>" : "\<CR>"
 inoremap jj <Esc>
 
 " clipboard paste/copy
-"inoremap <C-v> <Esc>"+gp`[v`]=`]a
 inoremap <C-v> <Esc>"+gpa
 vnoremap <C-c> "+y
 
@@ -468,8 +397,6 @@ nnoremap ネ :2<C-^>
 nnoremap ル :3<C-^>
 nnoremap ホ :0<C-^>
 
-
-
 " split/join arguments
 nnoremap <Leader>sa :call argumentrewrap#RewrapArguments()<CR>
 nnoremap <Leader>ja vi(kV:s/,*$//g<CR>gvk:normal $a,<CR>va(J%<Right>x
@@ -490,13 +417,109 @@ cmap w!! w !sudo tee % > /dev/null
 nnoremap <Leader>ev :e ~/.vimrc<CR>
 nnoremap <Leader>sv :source ~/.vimrc<CR>
 
-
 call textobj#user#plugin('space', {
 \   'sp': {
 \     'pattern': '\S\+',
 \     'select': ['a<Space>', 'i<Space>'],
 \   }
 \ })
+
+" tpope's vim-rsi without alt-key fixes (they interfere with my own fixes below)
+inoremap <C-A> <C-O>^
+inoremap <C-X><C-A> <C-A>
+cnoremap <C-A> <Home>
+cnoremap <C-X><C-A> <C-A>
+
+inoremap <expr> <C-B> getline('.')=~'^\s*$'&&col('.')>strlen(getline('.'))?"0\<Lt>C-D>\<Lt>Esc>kJs":"\<Lt>Left>"
+cnoremap <C-B> <Left>
+
+inoremap <expr> <C-D> col('.')>strlen(getline('.'))?"\<Lt>C-D>":"\<Lt>Del>"
+cnoremap <expr> <C-D> getcmdpos()>strlen(getcmdline())?"\<Lt>C-D>":"\<Lt>Del>"
+
+inoremap <expr> <C-E> col('.')>strlen(getline('.'))?"\<Lt>C-E>":"\<Lt>End>"
+
+inoremap <expr> <C-F> col('.')>strlen(getline('.'))?"\<Lt>C-F>":"\<Lt>Right>"
+cnoremap <expr> <C-F> getcmdpos()>strlen(getcmdline())?&cedit:"\<Lt>Right>"
+
+noremap! <expr> <SID>transposition getcmdpos()>strlen(getcmdline())?"\<Left>":getcmdpos()>1?'':"\<Right>"
+noremap! <expr> <SID>transpose "\<BS>\<Right>".matchstr(getcmdline()[0 : getcmdpos()-2], '.$')
+cmap <script> <C-T> <SID>transposition<SID>transpose
+
+noremap! <M-b> <S-Left>
+noremap! <M-d> <C-O>dw
+cnoremap <M-d> <S-Right><C-W>
+noremap! <M-f> <S-Right>
+
+
+if !has("gui_running")
+	" enable alt-key mappings in terminal
+	" http://stackoverflow.com/questions/6778961/alt-key-shortcuts-not-working-on-gnome-terminal-with-vim
+	exec "set <A-q>=\<Esc>q"
+	exec "set <A-w>=\<Esc>w"
+	exec "set <A-e>=\<Esc>e"
+	exec "set <A-r>=\<Esc>r"
+	exec "set <A-t>=\<Esc>t"
+	exec "set <A-y>=\<Esc>y"
+	exec "set <A-u>=\<Esc>u"
+	exec "set <A-i>=\<Esc>i"
+	exec "set <A-o>=\<Esc>o"
+	exec "set <A-p>=\<Esc>p"
+	exec "set <A-a>=\<Esc>a"
+	exec "set <A-s>=\<Esc>s"
+	exec "set <A-d>=\<Esc>d"
+	exec "set <A-f>=\<Esc>f"
+	exec "set <A-g>=\<Esc>g"
+	exec "set <A-h>=\<Esc>h"
+	exec "set <A-j>=\<Esc>j"
+	exec "set <A-k>=\<Esc>k"
+	exec "set <A-l>=\<Esc>l"
+	exec "set <A-;>=\<Esc>;"
+	exec "set <A-'>=\<Esc>'"
+	exec "set <A-z>=\<Esc>z"
+	exec "set <A-x>=\<Esc>x"
+	exec "set <A-c>=\<Esc>c"
+	exec "set <A-v>=\<Esc>v"
+	exec "set <A-b>=\<Esc>b"
+	exec "set <A-n>=\<Esc>n"
+	exec "set <A-m>=\<Esc>m"
+	exec "set <A-,>=\<Esc>,"
+	exec "set <A-.>=\<Esc>."
+	exec "set <A-/>=\<Esc>/"
+
+	exec "map \<Esc>q <A-q>"
+	exec "map \<Esc>w <A-w>"
+	exec "map \<Esc>e <A-e>"
+	exec "map \<Esc>r <A-r>"
+	exec "map \<Esc>t <A-t>"
+	exec "map \<Esc>y <A-y>"
+	exec "map \<Esc>u <A-u>"
+	exec "map \<Esc>i <A-i>"
+	exec "map \<Esc>o <A-o>"
+	exec "map \<Esc>p <A-p>"
+	exec "map \<Esc>a <A-a>"
+	exec "map \<Esc>s <A-s>"
+	exec "map \<Esc>d <A-d>"
+	exec "map \<Esc>f <A-f>"
+	exec "map \<Esc>g <A-g>"
+	exec "map \<Esc>h <A-h>"
+	exec "map \<Esc>j <A-j>"
+	exec "map \<Esc>k <A-k>"
+	exec "map \<Esc>l <A-l>"
+	exec "map \<Esc>; <A-;>"
+	exec "map \<Esc>' <A-'>"
+	exec "map \<Esc>z <A-z>"
+	exec "map \<Esc>x <A-x>"
+	exec "map \<Esc>c <A-c>"
+	exec "map \<Esc>v <A-v>"
+	exec "map \<Esc>b <A-b>"
+	exec "map \<Esc>n <A-n>"
+	exec "map \<Esc>m <A-m>"
+	exec "map \<Esc>, <A-,>"
+	exec "map \<Esc>. <A-.>"
+	exec "map \<Esc>/ <A-/>"
+
+	set timeout ttimeoutlen=50
+endif
 
 
 
