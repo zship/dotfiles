@@ -243,6 +243,75 @@ if &term =~ '^xterm'
 		let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 		let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 	endif
+
+	" enable alt-key mappings in terminal
+	" http://stackoverflow.com/questions/6778961/alt-key-shortcuts-not-working-on-gnome-terminal-with-vim
+	exec "set <A-q>=\eq"
+	exec "set <A-w>=\ew"
+	exec "set <A-e>=\ee"
+	exec "set <A-r>=\er"
+	exec "set <A-t>=\et"
+	exec "set <A-y>=\ey"
+	exec "set <A-u>=\eu"
+	exec "set <A-i>=\ei"
+	exec "set <A-o>=\eo"
+	exec "set <A-p>=\ep"
+	exec "set <A-a>=\ea"
+	exec "set <A-s>=\es"
+	exec "set <A-d>=\ed"
+	exec "set <A-f>=\ef"
+	exec "set <A-g>=\eg"
+	exec "set <A-h>=\eh"
+	exec "set <A-j>=\ej"
+	exec "set <A-k>=\ek"
+	exec "set <A-l>=\el"
+	exec "set <A-;>=\e;"
+	exec "set <A-'>=\e'"
+	exec "set <A-z>=\ez"
+	exec "set <A-x>=\ex"
+	exec "set <A-c>=\ec"
+	exec "set <A-v>=\ev"
+	exec "set <A-b>=\eb"
+	exec "set <A-n>=\en"
+	exec "set <A-m>=\em"
+	exec "set <A-,>=\e,"
+	exec "set <A-.>=\e."
+	exec "set <A-/>=\e/"
+
+	exec "imap \eq <A-q>"
+	exec "imap \ew <A-w>"
+	exec "imap \ee <A-e>"
+	exec "imap \er <A-r>"
+	exec "imap \et <A-t>"
+	exec "imap \ey <A-y>"
+	exec "imap \eu <A-u>"
+	exec "imap \ei <A-i>"
+	exec "imap \eo <A-o>"
+	exec "imap \ep <A-p>"
+	exec "imap \ea <A-a>"
+	exec "imap \es <A-s>"
+	exec "imap \ed <A-d>"
+	exec "imap \ef <A-f>"
+	exec "imap \eg <A-g>"
+	exec "imap \eh <A-h>"
+	exec "imap \ej <A-j>"
+	exec "imap \ek <A-k>"
+	exec "imap \el <A-l>"
+	exec "imap \e; <A-;>"
+	exec "imap \e' <A-'>"
+	exec "imap \ez <A-z>"
+	exec "imap \ex <A-x>"
+	exec "imap \ec <A-c>"
+	exec "imap \ev <A-v>"
+	exec "imap \eb <A-b>"
+	exec "imap \en <A-n>"
+	exec "imap \em <A-m>"
+	exec "imap \e, <A-,>"
+	exec "imap \e. <A-.>"
+	exec "imap \e/ <A-/>"
+
+	set timeout ttimeoutlen=50
+
 endif
 
 
@@ -364,7 +433,6 @@ call s:map("<A-j>", '<')
 call s:map("<A-k>", '<')
 
 nnoremap <A-z> ~
-
 
 " indentation command remaps
 vnoremap <A-;> =
