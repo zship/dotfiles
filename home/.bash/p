@@ -172,7 +172,7 @@ main() {
                 echo "Not found: '$command'"
                 ;;
             installed)
-                echo "Not found: '$command'"
+                brew list
                 ;;
             outdated)
                 brew outdated "$@"
