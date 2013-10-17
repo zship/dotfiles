@@ -1,0 +1,135 @@
+#!/bin/bash
+
+set -eo pipefail
+
+program=$(basename $0)
+DIRNAME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
+version() {
+    echo "$program 0.1.0"
+}
+
+
+name_match() {
+    name="$(main list | grep $1)"
+    matches="$(echo "$name" | wc -l)"
+    if [[ -z $name ]]; then
+        echo "There are no services matching the name '$1'." >&2
+        exit 1
+    elif [[ $matches -gt 1 ]]; then
+        echo "Ambiguous name given. Possible matches:" >&2
+        echo "$name"
+        exit 1
+    fi
+    echo "$name"
+}
+
+
+main() {
+    local command=$1
+    shift
+
+    case $command in
+        help|--help|-h)
+            usage
+            exit 0
+            ;;
+        completion)
+            cat "$DIRNAME/s-completion.sh"
+            exit 0
+            ;;
+        status)
+            name_match "$1" 1> /dev/null && name="$(name_match "$1")"
+            if (main status-impl "$name"); then
+                echo "$name is running."
+                exit 0
+            else
+                echo "$name is stopped."
+                exit 1
+            fi
+            ;;
+        start)
+            name_match "$1" 1> /dev/null && name="$(name_match "$1")"
+            if (main status-impl "$1"); then
+                echo "$name is already running."
+                exit 1
+            fi
+            echo "Starting $name..."
+            main start-impl "$1"
+            ;;
+        stop)
+            name_match "$1" 1> /dev/null && name="$(name_match "$1")"
+            if ! (main status-impl "$1"); then
+                echo "$name is already stopped."
+                exit 1
+            fi
+            echo "Stopping $name..."
+            main stop-impl "$1"
+            ;;
+        restart)
+            s stop "$1"
+            s start "$1"
+            ;;
+    esac
+
+    if hash launchctl &> /dev/null; then
+
+        plists() {
+            echo "$(find /Library/LaunchAgents -name *.plist)"
+            echo "$(find $HOME/Library/LaunchAgents -name *.plist)"
+            echo "$(find /Library/LaunchDaemons -name *.plist)"
+            echo "$(find /System/Library/LaunchDaemons -name *.plist)"
+        }
+
+        case $command in
+            list)
+                plists | perl -pe 's/.*\/(.*).plist$/\1/' | sort
+                ;;
+            status-impl)
+                if [[ $( launchctl list | grep -i "$(basename "$name" | sed 's/.plist$//g')" ) ]]; then
+                    exit 0
+                else
+                    exit 1
+                fi
+                ;;
+            start-impl)
+                launchctl load -F "$1"
+                ;;
+            stop-impl)
+                launchctl unload "$1"
+                ;;
+            *)
+                command_not_found $command
+                ;;
+        esac
+
+    elif hash sc &> /dev/null; then
+
+        case $command in
+            list)
+                sc queryex type= service state= all | grep SERVICE_NAME | sed 's/SERVICE_NAME: //' | sort
+                ;;
+            status-impl)
+                if sc interrogate "$1" | grep 'STATE.*RUNNING' &> /dev/null; then
+                    exit 0
+                else
+                    exit 1
+                fi
+                ;;
+            start-impl)
+                net start "$1"
+                ;;
+            stop-impl)
+                net stop "$1"
+                ;;
+            *)
+                command_not_found $command
+                ;;
+        esac
+
+    fi
+}
+
+
+main "$@"
