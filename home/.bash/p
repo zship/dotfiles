@@ -279,7 +279,7 @@ main() {
                 apt-cyg describe "$@" --noupdate | sed -n "/^$1$/,/^$/{p}"
                 ;;
             files)
-                command_not_found $command
+                cygcheck -l "$@"
                 ;;
             deplist)
                 p info "$@" | grep '^requires:' | sed 's/^requires: \(.*\)/\1/' | sed 's/ /\n/g' | sort
