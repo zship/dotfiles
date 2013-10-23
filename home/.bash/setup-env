@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -eo pipefail
+
+# increase max watched files
+max_watches="100001"
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    # increase limit right now
+    echo "$max_watches" | sudo tee /proc/sys/fs/inotify/max_user_watches
+    # make it stick on reboots
+    sudo sysctl -w fs.inotify.max_user_watches="$max_watches"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    launchctl limit maxfiles "$max_watches" "$max_watches"
+fi
