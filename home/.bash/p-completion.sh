@@ -19,7 +19,7 @@ complete_on_all() {
     local names
 
     if [ $pkg_manager == 'apt' ]; then
-        names=$(dpkg-query --show --showformat='${Package}\n' "$1*")
+        names=$(apt-cache pkgnames | grep "^$1")
     elif [ $pkg_manager == 'brew' ]; then
         names=$(find "$(brew --prefix)/Library/Formula" -name '*.rb' | perl -pe 's/.*\/(.*).rb$/\1/' | grep "^$1")
     elif [ $pkg_manager == 'yum' ]; then
