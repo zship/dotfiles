@@ -2,13 +2,24 @@
 
 set -eo pipefail
 
-# increase max watched files
-max_watches="100001"
+DIRNAME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Dropbox & btsync: increase max watched files
+max_watches="1000000"
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    # increase limit right now
-    echo "$max_watches" | sudo tee /proc/sys/fs/inotify/max_user_watches
-    # make it stick on reboots
-    sudo sysctl -w fs.inotify.max_user_watches="$max_watches"
+    if [[ "$(sysctl fs.inotify.max_user_watches)" != "fs.inotify.max_user_watches = $max_watches" ]]; then
+        echo "fs.inotify.max_user_watches = $max_watches" | sudo tee -a /etc/sysctl.conf
+        # apply new limit right now
+        sudo sysctl -p
+    fi
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     launchctl limit maxfiles "$max_watches" "$max_watches"
+fi
+
+# add a NOPASSWD line to sudoers file for the current user
+"$DIRNAME/setup-visudo-helper"
+
+# Ubuntu: make bash the default shell (for my complicated .profile script)
+if [[ "$(readlink /bin/sh)" == "/bin/dash" ]]; then
+    sudo ln -sf /bin/bash /bin/sh
 fi

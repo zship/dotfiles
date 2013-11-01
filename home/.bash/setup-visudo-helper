@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    export EDITOR=$0 && export VISUDO_HELPER_USER="$(whoami)" && sudo -E visudo
+elif ! cat "$1" | grep "$VISUDO_HELPER_USER ALL=NOPASSWD: ALL" &> /dev/null; then
+    echo "$VISUDO_HELPER_USER ALL=NOPASSWD: ALL" >> $1
+fi
