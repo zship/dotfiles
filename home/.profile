@@ -31,7 +31,8 @@ add_path() {
 }
 
 add_default_path() {
-    IFS=":"
+    IFS="$(printf ':')"
+
     local prev_path="$PATH"
     local prev_manpath="$MANPATH"
 
@@ -51,6 +52,8 @@ add_default_path() {
     for p in $default_manpath; do
         add_manpath "$p"
     done
+
+    IFS="$(printf ' \n\t')"
 }
 
 main() {
@@ -61,7 +64,9 @@ main() {
     add_default_path
     add_path "$HOME/bin"
     add_path "$HOME/.bash"
+    add_path "/bin"
     add_path "/sbin"
+    add_path "/usr/bin"
     add_path "/usr/sbin"
     add_path "/usr/local/ant/bin"
     add_path "$HOME/.cabal/bin" "$HOME/.cabal/share/man"
