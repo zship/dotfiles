@@ -67,8 +67,6 @@ filetype plugin on     " enable filetype-specific plugins
 syntax enable          " syntax coloring on
 let g:is_bash = 1      " make bash the default flavor for filetype=sh
 
-NeoBundleCheck
-
 
 " ========== General ==========
 
