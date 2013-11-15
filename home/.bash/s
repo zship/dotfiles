@@ -12,7 +12,7 @@ version() {
 
 
 name_match() {
-    name="$(main list | grep $1)"
+    name="$(main list | grep "^$1$")"
     matches="$(echo "$name" | wc -l)"
     if [[ -z $name ]]; then
         echo "There are no services matching the name '$1'." >&2
@@ -57,6 +57,7 @@ main() {
             fi
             echo "Starting $name..."
             main start-impl "$1"
+            return
             ;;
         stop)
             name_match "$1" 1> /dev/null && name="$(name_match "$1")"
@@ -66,6 +67,7 @@ main() {
             fi
             echo "Stopping $name..."
             main stop-impl "$1"
+            return
             ;;
         restart)
             s stop "$1"
@@ -73,7 +75,36 @@ main() {
             ;;
     esac
 
-    if hash launchctl &> /dev/null; then
+    if hash init &> /dev/null; then
+
+        init_scripts() {
+            echo "$( find /etc/init.d -mindepth 1 -executable | perl -pe 's/.*\/(.*)$/\1/' )"
+            echo "$( find /etc/init -mindepth 1 -name *.conf | perl -pe 's/.*\/(.*).conf$/\1/' )"
+        }
+
+        case $command in
+            list)
+                init_scripts | sort -u
+                ;;
+            status-impl)
+                if service "$1" status &> /dev/null; then
+                    exit 0
+                else
+                    exit 1
+                fi
+                ;;
+            start-impl)
+                service "$1" start
+                ;;
+            stop-impl)
+                service "$1" stop
+                ;;
+            *)
+                command_not_found $command
+                ;;
+        esac
+
+    elif hash launchctl &> /dev/null; then
 
         plists() {
             echo "$(find /Library/LaunchAgents -name *.plist)"
@@ -129,6 +160,7 @@ main() {
         esac
 
     fi
+
 }
 
 

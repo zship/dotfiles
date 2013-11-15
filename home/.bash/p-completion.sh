@@ -34,6 +34,7 @@ _p_completion() {
     local cur prev words cword
     _init_completion || return
 
+    local pkg_manager="$P_COMPLETION_PKG_MANAGER"
     local command=${COMP_WORDS[1]}
 
     case $command in
@@ -48,10 +49,18 @@ _p_completion() {
         search|\
         info|\
         deplist|\
-        install|\
         reinstall|\
         whatprovides)
             complete_on_all $cur
+            return
+            ;;
+        install)
+            complete_on_all $cur
+            if [ $pkg_manager == 'apt' ]; then
+                _filedir deb
+            elif [ $pkg_manager == 'yum' ]; then
+                _filedir rpm
+            fi
             return
             ;;
         update|\

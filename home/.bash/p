@@ -39,7 +39,7 @@ _EOF
 
 commands() {
     local commands='update outdated installed files search info depends install reinstall upgrade remove purge whatprovides clean autoclean'
-    for command in $(echo $commands); do
+    for command in $commands; do
         echo $command
     done
 }
@@ -72,20 +72,25 @@ main() {
             ;;
     esac
 
-    if which apt-get &>/dev/null; then
+    if hash apt-get &>/dev/null; then
 
         case $command in
             search)
                 apt-cache search "$@"
                 ;;
             install)
-                sudo apt-get install "$@"
+                if [[ -f $1 ]]; then
+                    sudo dpkg -i "$@"
+                else
+                    sudo apt-get install "$@"
+                fi
                 ;;
             reinstall)
                 sudo apt-get install --reinstall "$@"
                 ;;
             update)
                 sudo apt-get update "$@"
+                sudo apt-file update
                 ;;
             upgrade)
                 sudo apt-get upgrade "$@"
@@ -106,7 +111,7 @@ main() {
                 apt-cache depends "$@"
                 ;;
             whatprovides)
-                apt-file list --fixed-string "$1" | grep "/$1\$"
+                apt-file search --regexp "/$1$"
                 ;;
             installed)
                 dpkg-query -l "$1*" | grep '^ii'
@@ -125,7 +130,7 @@ main() {
                 ;;
         esac
 
-    elif which brew &>/dev/null; then
+    elif hash brew &>/dev/null; then
 
         case $command in
             search)
@@ -188,7 +193,7 @@ main() {
                 ;;
         esac
 
-    elif which yum &>/dev/null; then
+    elif hash yum &>/dev/null; then
 
         case $command in
             search)
@@ -251,7 +256,7 @@ main() {
                 ;;
         esac
 
-    elif which apt-cyg &>/dev/null; then
+    elif hash apt-cyg &>/dev/null; then
 
         case $command in
             search)
