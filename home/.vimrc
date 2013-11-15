@@ -649,6 +649,8 @@ let g:syntastic_javascript_checkers = ['jshint']
 let g:syntastic_html_checkers = ['w3']
 let g:syntastic_check_on_open = 1
 
+let g:syntastic_html_w3_api = 'http://localhost/w3c-validator/check'
+
 
 " ---------- tagbar ------------
 
