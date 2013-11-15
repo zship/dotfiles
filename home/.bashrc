@@ -45,7 +45,7 @@ my_completions &> /dev/null
 # reference: apt-get suggestions are from "command_not_found_handle"
 
 if hash atop &> /dev/null; then
-	alias top='atop'
+    alias top='atop'
 fi
 
 alias homesick="$HOME/.homeshick"
@@ -55,40 +55,51 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias ll='ls -alFhv'
 alias wget='wget -c' # resume wget by default
-alias tmux="TERM=screen-256color tmux"
 
-if man --no-hyphenation --no-justification man &>/dev/null; then
-	alias man='man --no-hyphenation --no-justification';
+if man --no-hyphenation --no-justification man &> /dev/null; then
+    alias man='man --no-hyphenation --no-justification';
 fi
+
+tmux() {
+    if [[ $# -gt 0 ]]; then
+        command tmux "$@"
+    else
+        TERM=screen-256color command tmux attach || command tmux new
+    fi
+}
+
+sshs() {
+    ssh -t "$1" 'tmux attach || tmux new || screen -DR';
+}
 
 
 make() {
-	makefile="$(findup Makefile)"
-	pushd "$(dirname $makefile)" 1>/dev/null
-	command make "$@"
-	popd 1>/dev/null
+    makefile="$(findup Makefile)"
+    pushd "$(dirname $makefile)" 1>/dev/null
+    command make "$@"
+    popd 1>/dev/null
 }
 
 
 # alias core git commands by wrapping git
 my_git() {
-	case "$1" in
-		pull)
-			git xpull "${@:2}"
-			;;
-		push)
-			git xpush "${@:2}"
-			;;
-		stash)
-			git xstash "${@:2}"
-			;;
-		status)
-			git xstatus "${@:2}"
-			;;
-		*)
-			command git "$@"
-			;;
-	esac
+    case "$1" in
+        pull)
+            git xpull "${@:2}"
+            ;;
+        push)
+            git xpush "${@:2}"
+            ;;
+        stash)
+            git xstash "${@:2}"
+            ;;
+        status)
+            git xstatus "${@:2}"
+            ;;
+        *)
+            command git "$@"
+            ;;
+    esac
 }
 
 alias git="my_git"
