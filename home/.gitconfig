@@ -2,7 +2,6 @@
 	name = Zach Shipley
 	email = zach@zachshipley.com
 [alias]
-	lg = log --graph --pretty=format:'%C(yellow)%h%C(reset) - %C(bold)%an%C(reset) %C(dim white)%ai (%ar)%C(reset)%C(red)%d%C(reset)%n''          %s'
 	mine = log --author zach --date local --decorate
 	subup = !"git pull; git submodule init; git submodule update; git submodule status"
 [color]

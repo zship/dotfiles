@@ -1,0 +1,74 @@
+#!/bin/bash
+
+set -eo pipefail
+
+potential_commits() {
+    echo "$1" | grep --only-matching '[0-9a-f]\{7,40\}' 2> /dev/null || true
+}
+
+valid_commits() {
+    all_commits="$(git rev-list --all)"
+    for commit in $(potential_commits "$1" | awk '!a[$0]++'); do
+        if echo "$all_commits" | grep -m 1 "^$commit.*"; then
+            echo $commit
+        fi
+        #git rev-parse $commit &> /dev/null && echo $commit
+    done
+}
+
+main() {
+    #local tmp="$(mktemp)"
+    #cat > "$tmp"
+    local input="$(cat)"
+    #local output="$input"
+    local count=0
+    local commands=''
+
+    local commits="$( echo "$input" | grep --only-matching '[0-9a-f]\{7,40\}' | awk '!a[$0]++' )"
+
+    #local potential_commits_short=''
+    #for commit in $potential_commits; do
+        #potential_commits_short="$(printf "$potential_commits_short\n${commit:0:7}")"
+    #done
+
+    #local invalid_commits="$( comm -13 <(git rev-list --all --abbrev-commit | sort -u) <(echo "$potential_commits_short" | sort -u) )"
+
+    #local invalid_commits_grep=''
+    #for commit in $invalid_commits; do
+        #invalid_commits_grep+="^$commit\\|"
+    #done
+    #invalid_commits_grep="$( echo "$invalid_commits_grep" | sed 's/\\|$//' )"
+
+    #local valid_commits="$( echo "$potential_commits" | grep -v "$invalid_commits_grep" )"
+
+    #local left_b="$(printf '\033[0m\033[37m[\033[0m')"
+    #local right_b="$(printf '\033[37m]\033[0m')"
+
+    #valid_commits "$input" &> /dev/null
+
+    for commit in $commits; do
+        let count="$(( $count + 1 ))"
+        if [[ $count -gt 99 ]]; then
+            break
+        fi
+        #abbrev_commit=${commit:0:7}
+        commands+=" -e \"s/$commit/$commit[$count]/g\""
+        #commands="$commands -e \"s/$abbrev_commit\([^[:alnum:]].*\)/$abbrev_commit $left_b$count$right_b\1/g\""
+        #commands="$commands -e \"s/$abbrev_commit$/$abbrev_commit $left_b$count$right_b/g\""
+    done
+
+    if [[ ! $commands ]]; then
+        echo "$input"
+        exit 0
+    fi
+
+    #echo "$commands"
+
+    local tmp="$(mktemp)"
+    echo "$input" > "$tmp"
+    echo "$(echo "$commands $tmp" | xargs sed)"
+    rm "$tmp"
+
+}
+
+main

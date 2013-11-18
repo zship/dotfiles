@@ -32,6 +32,7 @@ my_completions() {
     . <(p completion)
     . "$HOME/.bash/.git-completion.bash"
     . "$HOME/.scm_breeze/scm_breeze.sh"
+    . /usr/share/doc/tmux/examples/bash_completion_tmux.sh
 }
 
 my_completions &> /dev/null
@@ -84,6 +85,9 @@ make() {
 # alias core git commands by wrapping git
 my_git() {
     case "$1" in
+        log)
+            git xlog "${@:2}"
+            ;;
         pull)
             git xpull "${@:2}"
             ;;
@@ -95,6 +99,9 @@ my_git() {
             ;;
         status)
             git xstatus "${@:2}"
+            ;;
+        lg)
+            git xlog --graph --pretty=format:'%C(yellow)%h%C(reset) - %C(bold)%an%C(reset) %C(bold cyan)%ai (%ar)%C(reset)%C(red)%d%C(reset)%n''          %s'
             ;;
         *)
             command git "$@"

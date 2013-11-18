@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [[ -t 1 ]]; then
+    git log --color=always "$@" | slacker-git-commit | less -RXSF
+else
+    git log "$@" | slacker-git-commit | less -RXSF
+fi
