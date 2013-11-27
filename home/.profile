@@ -2,6 +2,10 @@ if [[ ! $ORIG_PATH ]]; then
     export ORIG_PATH="$PATH"
 fi
 
+if [[ ! $ORIG_MANPATH ]]; then
+    export ORIG_MANPATH="$MANPATH"
+fi
+
 next_path=''
 next_manpath=''
 
@@ -37,8 +41,8 @@ add_path() {
 add_default_path() {
     IFS=':'
 
-    local prev_path="$PATH"
-    local prev_manpath="$MANPATH"
+    local prev_path="$ORIG_PATH"
+    local prev_manpath="$ORIG_MANPATH"
 
     for p in $prev_path; do
         add_path "$p"
@@ -47,7 +51,6 @@ add_default_path() {
     # `manpath` only uses man's heuristics if MANPATH is empty
     export MANPATH=""
     default_manpath="$(manpath)"
-    MATHPATH="$prev_manpath"
 
     for p in $prev_manpath; do
         add_manpath "$p"
@@ -61,11 +64,11 @@ add_default_path() {
 }
 
 main() {
+    add_path "$HOME/bin"
     add_path "/usr/local/opt/coreutils/libexec/gnubin" "/usr/local/opt/coreutils/libexec/gnuman"
     add_path "/usr/local/git/bin"
     add_path "/usr/local/bin" "/usr/local/share/man"
     add_path "/usr/local/sbin"
-    add_path "$HOME/bin"
     add_default_path
     add_path "/bin"
     add_path "/sbin"
