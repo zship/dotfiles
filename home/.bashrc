@@ -27,10 +27,11 @@ PS1="\[$(color bold green)\]\u@\h \[$(color blue)\]"'${PWD/#$HOME/~}'" \[$(color
 
 my_completions() {
     . /etc/bash_completion
+    . "$HOME/bin/shlacker"
+    . "$HOME/bin/.git-completion.bash"
     hash brew && . $(brew --prefix)/share/bash-completion/bash_completion
     hash npm && . <(npm completion)
     . <(p completion)
-    . "$HOME/.bash/.git-completion.bash"
     . "$HOME/.scm_breeze/scm_breeze.sh"
     . /usr/share/doc/tmux/examples/bash_completion_tmux.sh
 }
@@ -51,14 +52,24 @@ fi
 
 alias homesick="$HOME/.homeshick"
 alias ls='ls --color=auto'
+alias ll='shlacker --format file ls --color=always -alFhv'
+alias less='less -RXSF'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias ll='ls -alFhv'
 alias wget='wget -c' # resume wget by default
 
+alias gs='git status'
+alias ga='git add'
+alias gb='git blame'
+alias gd='git diff'
+alias gl='git lg'
+
+alias se='shlacker-expand'
+alias sf='shlacker --format file'
+
 if man --no-hyphenation --no-justification man &> /dev/null; then
-    alias man='man --no-hyphenation --no-justification';
+    alias man='man --no-hyphenation --no-justification'
 fi
 
 tmux() {
@@ -84,10 +95,8 @@ make() {
 
 # alias core git commands by wrapping git
 my_git() {
+    args="${@:2}"
     case "$1" in
-        log)
-            git xlog "${@:2}"
-            ;;
         pull)
             git xpull "${@:2}"
             ;;
@@ -98,13 +107,13 @@ my_git() {
             git xstash "${@:2}"
             ;;
         status)
-            git xstatus "${@:2}"
+            shlacker --format file --pty command git status "$args"
             ;;
         lg)
-            git xlog --graph --pretty=format:'%C(yellow)%h%C(reset) - %C(bold)%an%C(reset) %C(bold cyan)%ai (%ar)%C(reset)%C(red)%d%C(reset)%n''          %s'
+            PAGER='less -RXSF' shlacker --format sha --pty command git log --graph --pretty=format:'%C(yellow)%h%C(reset) - %C(bold)%an%C(reset) %C(bold cyan)%ai (%ar)%C(reset)%C(red)%d%C(reset)%n''              %s' "$args"
             ;;
         *)
-            command git "$@"
+            shlacker command git "$@"
             ;;
     esac
 }

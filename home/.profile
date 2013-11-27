@@ -1,3 +1,7 @@
+if [[ ! $ORIG_PATH ]]; then
+    export ORIG_PATH="$PATH"
+fi
+
 next_path=''
 next_manpath=''
 
@@ -31,7 +35,7 @@ add_path() {
 }
 
 add_default_path() {
-    IFS="$(printf ':')"
+    IFS=':'
 
     local prev_path="$PATH"
     local prev_manpath="$MANPATH"
@@ -53,7 +57,7 @@ add_default_path() {
         add_manpath "$p"
     done
 
-    IFS="$(printf ' \n\t')"
+    IFS=$' \n\t'
 }
 
 main() {
@@ -61,9 +65,8 @@ main() {
     add_path "/usr/local/git/bin"
     add_path "/usr/local/bin" "/usr/local/share/man"
     add_path "/usr/local/sbin"
-    add_default_path
     add_path "$HOME/bin"
-    add_path "$HOME/.bash"
+    add_default_path
     add_path "/bin"
     add_path "/sbin"
     add_path "/usr/bin"
