@@ -25,4 +25,25 @@
 		<autogen>__KeyToKey__ KeyCode::DOT, VK_COMMAND, KeyCode::KEY_3</autogen>
 		<autogen>__KeyToKey__ KeyCode::SPACE, VK_COMMAND, KeyCode::KEY_0</autogen>
 	</item>
+
+	<appdef>
+		<appname>iterm</appname>
+		<equal>com.googlecode.iterm2</equal>
+	</appdef>
+
+	<item>
+		<name>Virtual keypad with Command key on iterm2</name>
+		<identifier>private.virtual.keypad.iterm</identifier>
+		<only>iterm</only>
+		<autogen>__KeyToKey__ KeyCode::U, VK_COMMAND, KeyCode::KEY_7</autogen>
+		<autogen>__KeyToKey__ KeyCode::I, VK_COMMAND, KeyCode::KEY_8</autogen>
+		<autogen>__KeyToKey__ KeyCode::O, VK_COMMAND, KeyCode::KEY_9</autogen>
+		<autogen>__KeyToKey__ KeyCode::J, VK_COMMAND, KeyCode::KEY_4</autogen>
+		<autogen>__KeyToKey__ KeyCode::K, VK_COMMAND, KeyCode::KEY_5</autogen>
+		<autogen>__KeyToKey__ KeyCode::L, VK_COMMAND, KeyCode::KEY_6</autogen>
+		<autogen>__KeyToKey__ KeyCode::M, VK_COMMAND, KeyCode::KEY_1</autogen>
+		<autogen>__KeyToKey__ KeyCode::COMMA, VK_COMMAND, KeyCode::KEY_2</autogen>
+		<autogen>__KeyToKey__ KeyCode::DOT, VK_COMMAND, KeyCode::KEY_3</autogen>
+		<autogen>__KeyToKey__ KeyCode::SPACE, VK_COMMAND, KeyCode::KEY_0</autogen>
+	</item>
 </root>
