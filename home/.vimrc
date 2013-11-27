@@ -26,7 +26,7 @@ NeoBundle 'kana/vim-textobj-indent'
 NeoBundle 'kana/vim-textobj-syntax'
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'majutsushi/tagbar'
-NeoBundle 'marijnh/tern_for_vim'
+"NeoBundle 'marijnh/tern_for_vim'
 NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'Raimondi/delimitMate'
 NeoBundle 'rbgrouleff/bclose.vim'
@@ -108,12 +108,7 @@ function! IndentationSettings()
 		set tabstop=2
 		set softtabstop=2
 		set shiftwidth=2
-	elseif (&ft == 'markdown')
-		set expandtab
-		set tabstop=4
-		set softtabstop=4
-		set shiftwidth=4
-	elseif (&ft == 'sh')
+	elseif (&ft == 'markdown' || &ft == 'sh' || &ft == 'python')
 		set expandtab
 		set tabstop=4
 		set softtabstop=4
