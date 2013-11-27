@@ -32,7 +32,6 @@ my_completions() {
     hash brew && . $(brew --prefix)/share/bash-completion/bash_completion
     hash npm && . <(npm completion)
     . <(p completion)
-    . "$HOME/.scm_breeze/scm_breeze.sh"
     . /usr/share/doc/tmux/examples/bash_completion_tmux.sh
 }
 
@@ -60,6 +59,7 @@ alias egrep='egrep --color=auto'
 alias wget='wget -c' # resume wget by default
 
 alias gs='shlacker --format file --pty git status'
+alias gc='git commit'
 alias gb='git blame'
 alias gd='git diff'
 alias gl='git lg'
