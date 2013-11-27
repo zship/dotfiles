@@ -59,11 +59,14 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias wget='wget -c' # resume wget by default
 
-alias gs='git status'
-alias ga='git add'
+alias gs='shlacker --format file --pty git status'
 alias gb='git blame'
 alias gd='git diff'
 alias gl='git lg'
+
+ga() {
+    git add "$@"; gs
+}
 
 alias se='shlacker-expand'
 alias sf='shlacker --format file'
@@ -84,12 +87,21 @@ sshs() {
     ssh -t "$1" 'tmux attach || tmux new || screen -DR';
 }
 
-
 make() {
     makefile="$(findup Makefile)"
     pushd "$(dirname $makefile)" 1>/dev/null
     command make "$@"
     popd 1>/dev/null
+}
+
+# For non-OS X systems, a placeholder for the program from
+# https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard
+reattach-to-user-namespace() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        command reattach-to-user-namespace "$@"
+    else
+        exec "$@"
+    fi
 }
 
 
@@ -105,9 +117,6 @@ my_git() {
             ;;
         stash)
             git xstash "${@:2}"
-            ;;
-        status)
-            shlacker --format file --pty command git status "$args"
             ;;
         lg)
             PAGER='less -RXSF' shlacker --format sha --pty command git log --graph --pretty=format:'%C(yellow)%h%C(reset) - %C(bold)%an%C(reset) %C(bold cyan)%ai (%ar)%C(reset)%C(red)%d%C(reset)%n''              %s' "$args"
