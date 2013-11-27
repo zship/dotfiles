@@ -40,13 +40,29 @@ NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'ujihisa/neco-ghc'
-NeoBundle 'Valloric/YouCompleteMe'
 NeoBundle 'vim-scripts/argtextobj.vim'
 NeoBundle 'vim-scripts/sh.vim'
 NeoBundle 'zship/CamelCaseMotion'
 NeoBundle 'zship/vim-easymotion'
 NeoBundle 'zship/vim-java-annotation-indent'
 NeoBundle 'zship/vim-pasta'
+
+NeoBundle 'Valloric/YouCompleteMe', {
+\ 'build' : {
+\     'cygwin' : './install.sh',
+\     'mac' : './install.sh --clang-completer',
+\     'unix' : './install.sh --clang-completer',
+\    },
+\ }
+
+NeoBundle 'marijnh/tern_for_vim', {
+\ 'build' : {
+\     'windows' : 'npm install',
+\     'cygwin' : 'npm install',
+\     'mac' : 'npm install',
+\     'unix' : 'npm install',
+\    },
+\ }
 
 NeoBundle 'Shougo/vimproc', {
 \ 'build' : {
